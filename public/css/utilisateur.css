@@ -1,0 +1,110 @@
+/* General container styling */
+body {
+    background-color: #f8f9fa; 
+  }
+  
+.container {
+  margin-top: 50px;
+}
+
+/* Title style */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Table styling */
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  text-align:left;
+  vertical-align: middle;
+}
+
+/* Custom styling for .btn links */
+td .btn {
+  font-size: 0.85rem; /* Smaller font size */
+  padding: 5px 8px; /* Smaller padding */
+  text-decoration: none;
+  display: block; /* Stack buttons vertically */
+  margin-bottom: 5px; /* Space between stacked buttons */
+  width: 100%; /* Make buttons full width of their container */
+  text-align: center;
+  border-radius: 4px;
+}
+
+/* Reduce the space between buttons */
+td .btn + .btn {
+  margin-left: 10px; /* Less space between the two buttons */
+}
+
+/* Remove margin from last button */
+td .btn:last-child {
+  margin-bottom: 0;
+}
+
+/* Button styles */
+button.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+button.btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+}
+
+button.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+button.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+td .btn {
+  border-radius: 4px;
+}
+
+
+/* Styling for equipment lists */
+ul.list-unstyled {
+  padding-left: 0;
+  margin: 0;
+}
+
+ul.list-unstyled li {
+  margin-bottom: 5px;  
+  padding: 3px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+ul.list-unstyled li strong {
+  font-weight: bold;
+  color: #343a40;  /* Dark color for the labels */
+}
+
+/* Optional: Style the "Aucun équipement" message */
+ul.list-unstyled p {
+  color: #0c08f8;
+  font-weight: bold;
+}
+
+
+/* "No user" message */
+.text-danger {
+  margin-top: 20px;
+  font-weight: 500;
+  font-size: 1.1rem;
+}

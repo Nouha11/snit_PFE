@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des matériels{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/materiel.css') }}">
+{% endblock %}
+
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Liste des Équipements</h2>
+    
+    <!-- Search Bar -->
+    <div class="mb-4">
+        <input type="text" class="form-control custom-search"  
+            placeholder="Rechercher un équipement par designation" >
+    </div>
+
+    <button class="btn btn-primary mb-3">Ajouter un équipement</button>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>N° Bureau</th>
+                <th>Direction</th>
+                <th>Désignation</th>
+                <th>Modèle</th>
+                <th>Inventaire</th>
+                <th>N° Série</th>
+                <th>Description</th>
+                <th>État</th>
+                <th>consommable_id</th>
+                <th>Utilisateur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for eq in equipements %}
+                <tr>
+                    <td>{{ eq.id_eq }}</td>
+                    <td>{{ eq.n_bur }}</td>
+                    <td>{{ eq.direction }}</td>
+                    <td>{{ eq.designation }}</td>
+                    <td>{{ eq.modele }}</td>
+                    <td>{{ eq.inventaire }}</td>
+                    <td>{{ eq.N_serie }}</td>
+                    <td>{{ eq.description }}</td>
+                    <td>{{ eq.etat }}</td>
+                    <td>{{ eq.consommable.id }} {{ eq.consommable.modele }}</td>
+                    <td>{{ eq.utilisateur.nom }} {{ eq.utilisateur.pren }}</td>
+                    <td>
+                        <button class="btn btn-warning w-100 mb-2">Modifier</button>
+                        <button class="btn btn-danger w-100">Supprimer</button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="11" class="text-center text-danger">Aucun équipement trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
