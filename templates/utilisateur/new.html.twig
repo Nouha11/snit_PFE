@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Utilisateur{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/utilisateur.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center">Création d'un nouvel utilisateur</h2>
+
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.nom) }}
+                    {{ form_widget(form.nom) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.pren) }}
+                    {{ form_widget(form.pren) }}
+                    {{ form_errors(form.pren) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.email) }}
+                    {{ form_widget(form.email) }}
+                    {{ form_errors(form.email) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.mobile) }}
+                    {{ form_widget(form.mobile) }}
+                    {{ form_errors(form.mobile) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.password) }}
+                    {{ form_widget(form.password) }}
+                    {{ form_errors(form.password) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.designation) }}
+                    {{ form_widget(form.designation) }}
+                    {{ form_errors(form.designation) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.equipements) }}
+                    {{ form_widget(form.equipements) }}
+                    {{ form_errors(form.equipements) }}
+                </div>
+            </div>
+            
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-success">Créer</button>
+            <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

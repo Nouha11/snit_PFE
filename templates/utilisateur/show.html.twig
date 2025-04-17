@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'utilisateur{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/utilisateur.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center">Détails de l'utilisateur</h2>
+
+    <div class="card">
+        <div class="card-header">
+            {{ utilisateur.nom }} {{ utilisateur.pren }}
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ utilisateur.idU }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ utilisateur.nom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Prénom</th>
+                        <td>{{ utilisateur.pren }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ utilisateur.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mobile</th>
+                        <td>{{ utilisateur.mobile }}</td>
+                    </tr>
+                    <tr>
+                        <th>Désignation</th>
+                        <td>
+                            {% if utilisateur.designation %}
+                                {{ utilisateur.designation.libelle }}
+                            {% else %}
+                                <span class="text-muted">Non assigné</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Equipement</th>
+                        <td>
+                            {% if utilisateur.equipement %}
+                                {{ utilisateur.equipements.libelle }}
+                            {% else %}
+                                <span class="text-muted">Non assigné</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <h5 class="mt-4">Équipements</h5>
+            {% if utilisateur.equipements is not empty %}
+                <ul class="list-group">
+                    {% for equipement in utilisateur.equipements %}
+                        <li class="list-group-item">
+                            <p><strong>ID:</strong> {{ equipement.id_eq }}</p>
+                            <p><strong>Modèle:</strong> {{ equipement.modele }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucun équipement</p>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        
+            {% if utilisateur.idU %}
+                <a href="{{ path('app_utilisateur_edit', {'id_u': utilisateur.idU}) }}" class="btn btn-warning">Modifier</a>
+                <form method="post" action="{{ path('app_utilisateur_delete', {'id_u': utilisateur.idU}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.idU) }}">
+                    <button class="btn btn-danger btn-sm">Supprimer</button>
+                </form>                             
+            {% else %}
+                <span class="text-muted">Actions non disponibles</span>
+            {% endif %}
+        </div>        
+    </div>
+</div>
+{% endblock %}

@@ -38,7 +38,7 @@ class Equipement
     private ?string $Etat = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'equipements')]
-    #[ORM\JoinColumn(name: "utilisateur_id", referencedColumnName: "id_u", nullable: false)]
+    #[ORM\JoinColumn(name: "utilisateur_id", referencedColumnName: "id_u", nullable: true)]
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\ManyToOne(targetEntity: Consommable::class, inversedBy: 'equipements')]
