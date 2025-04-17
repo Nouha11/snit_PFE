@@ -28,24 +28,28 @@ class UtilisateurController extends AbstractController
         $utilisateur = new Utilisateur();
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
+            // Persist the user first
+            $entityManager->persist($utilisateur);
+            
             // Get the selected Equipements
             $equipements = $form->get('equipements')->getData();
-            dd($equipements);
-
+            //dump(count($equipements));
             foreach ($equipements as $equipement) {
-                $utilisateur->addEquipement($equipement); // this will also set $equipement->setUtilisateur()
-                dump($equipement);
+                // Update the equipement to point to this user
+                $equipement->setUtilisateur($utilisateur);
+                // Let Doctrine know the equipement has been updated
+                $entityManager->persist($equipement);
             }
-
-            $entityManager->persist($utilisateur);
-            $entityManager->flush(); // will persist both user AND updated equipements
-
+            
+            // Flush all changes
+            $entityManager->flush();
+            
             $this->addFlash('success', 'Utilisateur créé avec succès!');
             return $this->redirectToRoute('app_utilisateur_index');
         }
-
+        
         return $this->render('utilisateur/new.html.twig', [
             'utilisateur' => $utilisateur,
             'form' => $form->createView(),
@@ -71,27 +75,59 @@ class UtilisateurController extends AbstractController
 
 
     #[Route('/utilisateur/{id_u}/edit', name: 'app_utilisateur_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, int $id_u, EntityManagerInterface $entityManager): Response
     {
+        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($id_u);
+        
         if (!$utilisateur) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
-    
+        
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
-    
+        
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $submittedPassword = $form->get('password')->getData();
+            if (!empty($submittedPassword)) {
+                $utilisateur->setPassword($submittedPassword);
+            }
+            //dd($submittedPassword , !empty($submittedPassword));
+
+            // Handle equipment relationships
+            $selectedEquipement = $form->get('equipements')->getData();
+            //dd($utilisateur->getEquipements());
+
+            // First, remove any equipment that are no longer selected
+            foreach ($utilisateur->getEquipements()->toArray() as $existingEquipement) {
+                if (!$selectedEquipement->contains($existingEquipement)) {
+                    $utilisateur->removeEquipement($existingEquipement);
+                    $existingEquipement->setUtilisateur(null);
+                    $entityManager->persist($existingEquipement);
+                }
+            }
+            
+            // Then add newly selected equipment
+            $equipements = $form->get('equipements')->getData();
+            //dump(count($equipements));
+            foreach ($equipements as $equipement) {
+                // Update the equipement to point to this user
+                $equipement->setUtilisateur($utilisateur);
+                // Let Doctrine know the equipement has been updated
+                $entityManager->persist($equipement);
+            }
+            
             $entityManager->flush();
-    
+            
             $this->addFlash('success', 'Utilisateur modifié avec succès!');
             return $this->redirectToRoute('app_utilisateur_index');
         }
-    
+        
         return $this->render('utilisateur/edit.html.twig', [
             'utilisateur' => $utilisateur,
             'form' => $form,
         ]);
-    }    
+    }
     
 
     #[Route('/utilisateur/{id_u}/delete', name: 'app_utilisateur_delete', methods: ['POST'])]

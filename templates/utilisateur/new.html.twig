@@ -6,6 +6,26 @@
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/utilisateur.css') }}">
 {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function togglePasswordVisibility() {
+            const input = document.getElementById('{{ form.password.vars.id }}');
+            const icon = document.getElementById('toggleIcon');
+        
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+    </script>
+        
+{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -42,9 +62,24 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    {{ form_label(form.password) }}
-                    {{ form_widget(form.password) }}
-                    {{ form_errors(form.password) }}
+                    <div class="mb-3">
+                        {{ form_label(form.password) }}
+                        <label for="{{ form.password.vars.id }}" class="form-label">{{ form_label(form.password) }}</label>
+                        <div class="input-group">
+                            {{ form_widget(form.password, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'type': 'password'
+                                }
+                            }) }}                            
+                        
+                            <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">
+                                <i id="toggleIcon" class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {{ form_errors(form.password) }}
+                    </div>
+                    
                 </div>
                 <div class="col-md-6 mb-3">
                     {{ form_label(form.designation) }}

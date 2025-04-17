@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class UtilisateurType extends AbstractType
 {
@@ -39,8 +41,9 @@ class UtilisateurType extends AbstractType
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
                 'attr' => ['class' => 'form-control'],
+                'required' => false,
                 'empty_data' => '',
-                // In a real application, you would want to handle passwords more securely
+                'help' => 'Laissez vide pour conserver le mot de passe actuel!'
             ])
             ->add('designation', EntityType::class, [
                 'class' => Designation::class,
@@ -66,6 +69,7 @@ class UtilisateurType extends AbstractType
                 },
                 'attr' => ['class' => 'form-control'],
             ]);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

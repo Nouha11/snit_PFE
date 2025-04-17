@@ -7,6 +7,40 @@
     <link rel="stylesheet" href="{{ asset('css/utilisateur.css') }}">
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers for equipment removal buttons
+            document.querySelectorAll('.remove-equipment').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const equipmentId = this.getAttribute('data-equipment-id');
+                    
+                    // Find and uncheck the corresponding checkbox in the form
+                    let checkboxFound = false;
+                    document.querySelectorAll('input[type="checkbox"][name^="utilisateur[equipements]"]').forEach(function(checkbox) {
+                        // Get the label or value
+                        const value = checkbox.value;
+
+                        if (value === equipmentId) {
+                            checkbox.checked = false;
+                            checkboxFound = true;
+                        }
+
+                    });
+                    
+                    // Visually remove from the current equipment list
+                    this.closest('li').style.display = 'none';
+                    
+                    if (!checkboxFound) {
+                        console.warn('Could not find checkbox for equipment ID: ' + equipmentId);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block body %}
 <div class="container mt-5">
     <h2 class="text-center">Modification de l'utilisateur</h2>
@@ -43,14 +77,50 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     {{ form_label(form.password) }}
-                    {{ form_widget(form.password, {'attr': {'placeholder': 'Laissez vide pour conserver le mot de passe actuel'}}) }}
+                    {{ form_widget(form.password) }}
                     {{ form_errors(form.password) }}
-                    <small class="form-text text-muted">Laissez vide pour conserver le mot de passe actuel</small>
+                    <small class="form-text text-muted">Laissez vide pour conserver le mot de passe actuel!</small>
                 </div>
                 <div class="col-md-6 mb-3">
                     {{ form_label(form.designation) }}
                     {{ form_widget(form.designation) }}
                     {{ form_errors(form.designation) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <h5 class="text">Équipements</h5>
+                <div class="col-md-6 mb-3">
+                    <h6>Équipements actuels</h6>
+                    {% if utilisateur.equipements is not empty %}
+                    <ul class="list-group">
+                        {% for equipement in utilisateur.equipements %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div><strong>ID:</strong> {{ equipement.id_eq }}</div>
+                                    <div><strong>N° Série:</strong> {{ equipement.n_serie }}</div>
+                                    <div><strong>Modèle:</strong> {{ equipement.modele }}</div>
+                                    <div><strong>Designation:</strong> {{ equipement.designation }}</div>
+                                </div>
+                                <button type="button" class="btn btn-danger btn-sm remove-equipment" 
+                                        data-equipment-id="{{ equipement.id_eq }}"
+                                        title="Retirer cet équipement">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                        <p>Aucun équipement associé</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <h6>Gérer les équipements</h6>
+                    <div class="form-check-list">
+                        {{ form_widget(form.equipements) }}
+                        {{ form_errors(form.equipements) }}
+                    </div>
+                    <small class="text-muted">Cochez pour assigner un équipement, décochez pour retirer</small>
                 </div>
             </div>
         </div>
@@ -62,3 +132,4 @@
     {{ form_end(form) }}
 </div>
 {% endblock %}
+
