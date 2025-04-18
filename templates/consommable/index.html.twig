@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des consommables{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Liste des consommables</h1>
+                <a href="{{ path('app_consommable_new') }}" class="btn btn-light">
+                    <i class="fas fa-plus-circle me-1"></i> Ajouter
+                </a>
+            </div>
+            
+            <div class="card-body">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Désignation</th>
+                                <th>Modèle</th>
+                                <th>Couleur</th>
+                                <th>Quantité</th>
+                                <th>État</th>
+                                <th>Valeur</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for consommable in consommables %}
+                            <tr>
+                                <td>{{ consommable.id }}</td>
+                                <td>{{ consommable.designation }}</td>
+                                <td>{{ consommable.modele }}</td>
+                                <td>
+                                    <span class="color-badge" style="background-color: '{{ consommable.couleur }}'" title="{{ consommable.couleur }}"></span>
+                                    {{ consommable.couleur }}
+                                </td>
+                                <td>{{ consommable.quantite }}</td>
+                                <td>
+                                    <span class="badge rounded-pill 
+                                        {% if consommable.etat == 'Neuf' %}bg-success
+                                        {% elseif consommable.etat == 'Bon' %}bg-info
+                                        {% elseif consommable.etat == 'Usagé' %}bg-warning
+                                        {% elseif consommable.etat == 'Abîmé' %}bg-danger
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ consommable.etat }}
+                                    </span>
+                                </td>
+                                <td>{{ consommable.valeur }} €</td>
+                                <td class="actions">
+                                    <a href="{{ path('app_consommable_show', {'id_cons': consommable.id}) }}" class="btn btn-sm btn-info" title="Détails">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ path('app_consommable_edit', {'id_cons': consommable.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_consommable_delete', {'id_cons': consommable.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce consommable?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consommable.id) }}">
+                                        <button class="btn btn-sm btn-danger" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center">Aucun consommable trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                Total: {{ consommables|length }} consommable(s)
+            </div>
+        </div>
+    </div>
+{% endblock %}

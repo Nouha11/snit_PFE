@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier consommable{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Modifier le consommable</h1>
+                <div>
+                    <a href="{{ path('app_consommable_index') }}" class="btn btn-light me-2">
+                        <i class="fas fa-arrow-left me-1"></i> Retour
+                    </a>
+                    <a href="{{ path('app_consommable_show', {'id_cons': consommable.id}) }}" class="btn btn-info">
+                        <i class="fas fa-eye me-1"></i> Détails
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                {{ include('consommable/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+            </div>
+            
+            <div class="card-footer">
+                <form method="post" action="{{ path('app_consommable_delete', {'id_cons': consommable.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce consommable?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consommable.id) }}">
+                    <button class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

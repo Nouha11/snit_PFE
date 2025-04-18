@@ -4,8 +4,8 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/utilisateur.css') }}">
-{% endblock %}
+    <link rel="stylesheet" href="{{ asset('css/utilisateur.css') }}?v={{ "now"|date("U") }}">
+    {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -98,7 +98,7 @@
                             <li class="list-group-item d-flex justify-content-between align-items-start">
                                 <div class="ms-2 me-auto">
                                     <div><strong>ID:</strong> {{ equipement.id_eq }}</div>
-                                    <div><strong>N° Série:</strong> {{ equipement.n_serie }}</div>
+                                    <div><strong>N° Série:</strong> {{ equipement.Nserie }}</div>
                                     <div><strong>Modèle:</strong> {{ equipement.modele }}</div>
                                     <div><strong>Designation:</strong> {{ equipement.designation }}</div>
                                 </div>

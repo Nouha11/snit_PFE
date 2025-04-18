@@ -1,13 +1,10 @@
 /* General container styling */
 body {
-  background-color: #2489ee; 
+  background-color: #f8f9fa; 
 }
 
 .container {
-  margin-top: 50px;
-  max-width: 900px; /* Add this to center and contain content */
-  margin-left: auto;
-  margin-right: auto;
+margin-top: 50px;
 }
 
 /* Title style */
@@ -138,7 +135,6 @@ font-weight: 500;
 font-size: 1.1rem;
 }
 
-/* Flash messages */
 .alert {
 margin-bottom: 20px;
 }

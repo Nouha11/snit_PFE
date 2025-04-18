@@ -42,7 +42,7 @@ class Equipement
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\ManyToOne(targetEntity: Consommable::class, inversedBy: 'equipements')]
-    #[ORM\JoinColumn(name: "consommable_id", referencedColumnName: "id_cons", nullable: false)]
+    #[ORM\JoinColumn(name: "consommable_id", referencedColumnName: "id_cons", nullable: true)]
     private ?Consommable $consommable = null;
     
 
@@ -71,12 +71,12 @@ class Equipement
         return $this->id_eq;
     }
 
-    public function getN_bur(): ?int
+    public function getNbur(): ?int
     {
         return $this->n_bur;
     }
 
-    public function setN_bur(int $n_bur): self
+    public function setNbur(int $n_bur): self
     {
         $this->n_bur = $n_bur;
         return $this;
@@ -126,12 +126,12 @@ class Equipement
         return $this;
     }
 
-    public function getN_serie(): ?string
+    public function getNserie(): ?string
     {
         return $this->N_serie;
     }
 
-    public function setN_serie(string $N_serie): self
+    public function setNserie(string $N_serie): self
     {
         $this->N_serie = $N_serie;
         return $this;

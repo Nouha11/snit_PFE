@@ -56,7 +56,7 @@ class UtilisateurType extends AbstractType
             ->add('equipements', EntityType::class, [
                 'class' => Equipement::class,
                 'choice_label' => function ($equipement) {
-                    return $equipement->getN_serie() . ' - ' . $equipement->getModele() . ' - ' .$equipement->getDesignation() ;  
+                    return $equipement->getNserie() . ' - ' . $equipement->getModele() . ' - ' .$equipement->getDesignation() ;  
                 },
                 'label' => 'Équipements disponibles',
                 'multiple' => true,  

@@ -1,0 +1,175 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Équipement{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/equipement.css') }}?v={{ "now"|date("U") }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h1 class="m-0 font-weight-bold text-primary">Détails de l'Équipement</h1>
+                        <div>
+                            <a href="{{ path('app_equipement_index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Retour à la liste
+                            </a>
+                            <a href="{{ path('app_equipement_edit', {'id_eq': equipement.id_eq}) }}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5>Informations générales</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <tbody>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <td>{{ equipement.id_eq }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Bureau</th>
+                                                    <td>{{ equipement.nbur }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Direction</th>
+                                                    <td>{{ equipement.direction }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Désignation</th>
+                                                    <td>{{ equipement.designation }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>État</th>
+                                                    <td>
+                                                        <span class="badge {{ equipement.Etat == 'Neuf' ? 'bg-success' : 
+                                                                        equipement.Etat == 'Bon état' ? 'bg-info' : 
+                                                                        equipement.Etat == 'État moyen' ? 'bg-warning' : 
+                                                                        equipement.Etat == 'Mauvais état' ? 'bg-danger' : 'bg-dark' }}">
+                                                            {{ equipement.Etat }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5>Caractéristiques techniques</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <tbody>
+                                                <tr>
+                                                    <th>Modèle</th>
+                                                    <td>{{ equipement.Modele }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Inventaire</th>
+                                                    <td>{{ equipement.Inventaire }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Numéro de série</th>
+                                                    <td>{{ equipement.Nserie }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Consommable associé</th>
+                                                    <td>
+                                                        {% if equipement.consommable %}
+                                                            {{ equipement.consommable.designation is not empty ? equipement.consommable.designation : equipement.consommable.idCons }}
+                                                        {% else %}
+                                                            Non spécifié
+                                                        {% endif %}
+                                                    </td>
+                                                                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5>Utilisateur</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if equipement.utilisateur %}
+                                            <p><strong>Nom:</strong> {{ equipement.utilisateur.nom }} {{ equipement.utilisateur.pren }}</p>
+                                            <p><strong>Email:</strong> {{ equipement.utilisateur.email }}</p>
+                                            <p><strong>Téléphone:</strong> {{ equipement.utilisateur.mobile|default('Non renseigné') }}</p>
+                                            <a href="{{ path('app_utilisateur_show', {'id_u': equipement.utilisateur.idU}) }}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-user"></i> Voir le profil
+                                            </a>
+                                        {% else %}
+                                            <p class="text-muted">Aucun utilisateur associé à cet équipement</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5>Description</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>{{ equipement.Description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash"></i> Supprimer cet équipement
+                            </button>
+                        </div>
+                        
+                        <!-- Delete Modal -->
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Êtes-vous sûr de vouloir supprimer cet équipement : 
+                                        <br>
+                                        ID: {{ equipement.id_eq}} 
+                                        <br>
+                                        N_Serie: {{ equipement.Nserie }}
+                                        <br>
+                                        Equipemennt: {{equipement.designation }} ({{ equipement.Modele }})?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        <form method="post" action="{{ path('app_equipement_delete', {'id_eq': equipement.id_eq}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipement.id_eq) }}">
+                                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

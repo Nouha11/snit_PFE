@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du consommable{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Détails du consommable</h1>
+                <div>
+                    <a href="{{ path('app_consommable_index') }}" class="btn btn-light me-2">
+                        <i class="fas fa-arrow-left me-1"></i> Retour
+                    </a>
+                    <a href="{{ path('app_consommable_edit', {'id_cons': consommable.id}) }}" class="btn btn-warning">
+                        <i class="fas fa-edit me-1"></i> Modifier
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="consommable-details">
+                            <div class="detail-item">
+                                <span class="detail-label">ID:</span>
+                                <span class="detail-value">{{ consommable.id }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Désignation:</span>
+                                <span class="detail-value">{{ consommable.designation }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Modèle:</span>
+                                <span class="detail-value">{{ consommable.modele }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Couleur:</span>
+                                <span class="detail-value">
+                                    <span class="color-badge" style="background-color: '{{ consommable.couleur }}'" title="{{ consommable.couleur }}"></span>
+                                    {{ consommable.couleur }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="consommable-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Quantité:</span>
+                                <span class="detail-value">{{ consommable.quantite }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">État:</span>
+                                <span class="detail-value">
+                                    <span class="badge rounded-pill 
+                                        {% if consommable.etat == 'Neuf' %}bg-success
+                                        {% elseif consommable.etat == 'Bon' %}bg-info
+                                        {% elseif consommable.etat == 'Usagé' %}bg-warning
+                                        {% elseif consommable.etat == 'Abîmé' %}bg-danger
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ consommable.etat }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Valeur:</span>
+                                <span class="detail-value">{{ consommable.valeur }} €</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if consommable.equipements|length > 0 %}
+                    <div class="mt-4">
+                        <h3 class="h5">Équipements associés</h3>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for equipement in consommable.equipements %}
+                                        <tr>
+                                            <td>{{ equipement.id }}</td>
+                                            <td>{{ equipement.nom }}</td>
+                                            <td>
+                                                <a href="{{ path('app_equipement_show', {'id': equipement.id}) }}" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="card-footer">
+                <form method="post" action="{{ path('app_consommable_delete', {'id_cons': consommable.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce consommable?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consommable.id) }}">
+                    <button class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
