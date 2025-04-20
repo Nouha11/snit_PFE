@@ -13,12 +13,6 @@ class Equipement
     #[ORM\Column]
     private ?int $id_eq = null;
 
-    #[ORM\Column(type: 'integer')]
-    private ?int $n_bur = null;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $direction = null;
-
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $designation = null;
 
@@ -69,28 +63,6 @@ class Equipement
     public function getId_eq(): ?int
     {
         return $this->id_eq;
-    }
-
-    public function getNbur(): ?int
-    {
-        return $this->n_bur;
-    }
-
-    public function setNbur(int $n_bur): self
-    {
-        $this->n_bur = $n_bur;
-        return $this;
-    }
-
-    public function getDirection(): ?string
-    {
-        return $this->direction;
-    }
-
-    public function setDirection(string $direction): self
-    {
-        $this->direction = $direction;
-        return $this;
     }
 
     public function getDesignation(): ?string

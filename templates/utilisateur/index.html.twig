@@ -27,11 +27,12 @@
         <thead class="table-dark">
             <tr>
                 <th>ID</th>
+                <th>Num Bureau</th>
                 <th>Nom</th>
                 <th>Prénom</th>
                 <th>Email</th>
                 <th>Mobile</th>
-                <th>Désignation</th>
+                <th>Direction</th>
                 <th>Équipements</th>
                 <th>Actions</th>
             </tr>
@@ -40,13 +41,14 @@
             {% for user in utilisateurs %}
                 <tr>
                     <td>{{ user.idU }}</td>
+                    <td>{{ user.nbur }}</td>
                     <td>{{ user.nom }}</td>
                     <td>{{ user.pren }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.mobile }}</td>
                     <td>
-                        {% if user.designation %}
-                            {{ user.designation.libelle }}
+                        {% if user.direction %}
+                            {{ user.direction.libelle }}
                         {% else %}
                             <span class="text-muted">Non assigné</span>
                         {% endif %}

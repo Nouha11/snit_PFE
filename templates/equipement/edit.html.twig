@@ -49,6 +49,7 @@
                                         <br>
                                         Equipemennt: {{equipement.designation }} ({{ equipement.Modele }})?
                                     </div>
+                                    
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                                         <form method="post" action="{{ path('app_equipement_delete', {'id_eq': equipement.id_eq}) }}">

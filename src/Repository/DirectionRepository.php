@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Designation;
+use App\Entity\Direction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Designation>
+ * @extends ServiceEntityRepository<Direction>
  */
-class DesignationRepository extends ServiceEntityRepository
+class DirectionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Designation::class);
+        parent::__construct($registry, Direction::class);
     }
 
 //    /**
-//     * @return Designation[] Returns an array of Designation objects
+//     * @return Direction[] Returns an array of Direction objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -31,7 +31,7 @@ class DesignationRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Designation
+//    public function findOneBySomeField($value): ?Direction
 //    {
 //        return $this->createQueryBuilder('d')
 //            ->andWhere('d.exampleField = :val')

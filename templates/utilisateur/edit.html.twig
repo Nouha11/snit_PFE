@@ -50,6 +50,19 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    {{ form_label(form.n_bur) }}
+                    {{ form_widget(form.n_bur) }}
+                    {{ form_errors(form.n_bur) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.direction) }}
+                    {{ form_widget(form.direction) }}
+                    {{ form_errors(form.direction) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
                     {{ form_label(form.nom) }}
                     {{ form_widget(form.nom) }}
                     {{ form_errors(form.nom) }}
@@ -81,11 +94,6 @@
                     {{ form_errors(form.password) }}
                     <small class="form-text text-muted">Laissez vide pour conserver le mot de passe actuel!</small>
                 </div>
-                <div class="col-md-6 mb-3">
-                    {{ form_label(form.designation) }}
-                    {{ form_widget(form.designation) }}
-                    {{ form_errors(form.designation) }}
-                </div>
             </div>
 
             <div class="row">
@@ -100,7 +108,6 @@
                                     <div><strong>ID:</strong> {{ equipement.id_eq }}</div>
                                     <div><strong>N° Série:</strong> {{ equipement.Nserie }}</div>
                                     <div><strong>Modèle:</strong> {{ equipement.modele }}</div>
-                                    <div><strong>Designation:</strong> {{ equipement.designation }}</div>
                                 </div>
                                 <button type="button" class="btn btn-danger btn-sm remove-equipment" 
                                         data-equipment-id="{{ equipement.id_eq }}"

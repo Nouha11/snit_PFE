@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\DesignationRepository;
+use App\Repository\DirectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: DesignationRepository::class)]
-class Designation
+#[ORM\Entity(repositoryClass: DirectionRepository::class)]
+class Direction
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,7 +18,7 @@ class Designation
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\OneToMany(mappedBy: 'designation', targetEntity: Utilisateur::class)]
+    #[ORM\OneToMany(mappedBy: 'direction', targetEntity: Utilisateur::class)]
     private Collection $utilisateurs;
 
     public function getIdDes(): ?int
@@ -52,7 +52,7 @@ class Designation
     {
         if (!$this->utilisateurs->contains($utilisateur)) {
             $this->utilisateurs[] = $utilisateur;
-            $utilisateur->setDesignation($this);
+            $utilisateur->setDirection($this);
         }
 
         return $this;
@@ -61,8 +61,8 @@ class Designation
     public function removeUtilisateur(Utilisateur $utilisateur): self
     {
         if ($this->utilisateurs->removeElement($utilisateur)) {
-            if ($utilisateur->getDesignation() === $this) {
-                $utilisateur->setDesignation(null);
+            if ($utilisateur->getDirection() === $this) {
+                $utilisateur->setDirection(null);
             }
         }
 

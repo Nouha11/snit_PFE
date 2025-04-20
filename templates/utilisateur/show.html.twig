@@ -21,6 +21,10 @@
                     <tr>
                         <th>ID</th>
                         <td>{{ utilisateur.idU }}</td>
+                    </tr>                    
+                    <tr>
+                        <th>Num Bureau</th>
+                        <td>{{ utilisateur.nBur  }}</td>
                     </tr>
                     <tr>
                         <th>Nom</th>
@@ -39,10 +43,10 @@
                         <td>{{ utilisateur.mobile }}</td>
                     </tr>
                     <tr>
-                        <th>Désignation</th>
+                        <th>Direction</th>
                         <td>
-                            {% if utilisateur.designation %}
-                                {{ utilisateur.designation.libelle }}
+                            {% if utilisateur.direction %}
+                                {{ utilisateur.direction.libelle }}
                             {% else %}
                                 <span class="text-muted">Non assigné</span>
                             {% endif %}
@@ -59,7 +63,11 @@
                         <li class="list-group-item">
                             <p><strong>ID:</strong> {{ equipement.id_eq }}</p>
                             <p><strong>Modèle:</strong> {{ equipement.modele }}</p>
+                            <a href="{{ path('app_equipement_show', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-info">
+                                <i class="fas fa-gear"></i> Voir l'equipement
+                            </a>
                         </li>
+
                     {% endfor %}
                 </ul>
             {% else %}

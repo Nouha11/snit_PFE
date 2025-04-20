@@ -30,9 +30,12 @@ class Utilisateur
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    #[ORM\Column(type: 'integer')]
+    private ?int $n_bur = null;
+
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(name: 'id_des', referencedColumnName: 'id_des')]
-    private ?Designation $designation = null;
+    private ?Direction $direction = null;
 
 
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Equipement::class)]
@@ -60,14 +63,25 @@ class Utilisateur
     public function getPassword(): ?string { return $this->password; }
     public function setPassword(string $password): static { $this->password = $password; return $this; }
 
-    public function getDesignation(): ?Designation
+    public function getNbur(): ?int
     {
-        return $this->designation;
+        return $this->n_bur;
     }
 
-    public function setDesignation(?Designation $designation): self
+    public function setNbur(int $n_bur): self
     {
-        $this->designation = $designation;
+        $this->n_bur = $n_bur;
+        return $this;
+    }
+
+    public function getDirection(): ?Direction
+    {
+        return $this->direction;
+    }
+
+    public function setDirection(?Direction $direction): self
+    {
+        $this->direction = $direction;
         return $this;
     }
 

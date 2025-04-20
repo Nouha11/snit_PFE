@@ -3,19 +3,18 @@
 namespace App\Form;
 
 use App\Entity\Utilisateur;
-use App\Entity\Designation;
+use App\Entity\Direction;
 use App\Entity\Equipement;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 class UtilisateurType extends AbstractType
 {
@@ -45,18 +44,22 @@ class UtilisateurType extends AbstractType
                 'empty_data' => '',
                 'help' => 'Laissez vide pour conserver le mot de passe actuel!'
             ])
-            ->add('designation', EntityType::class, [
-                'class' => Designation::class,
+            ->add('n_bur', IntegerType::class, [
+                'label' => 'Numéro de bureau',
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('direction', EntityType::class, [
+                'class' => Direction::class,
                 'choice_label' => 'libelle',
-                'label' => 'Désignation',
-                'placeholder' => 'Choisir une désignation',
+                'label' => 'Direction',
+                'placeholder' => 'Choisir une direction',
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('equipements', EntityType::class, [
                 'class' => Equipement::class,
                 'choice_label' => function ($equipement) {
-                    return $equipement->getNserie() . ' - ' . $equipement->getModele() . ' - ' .$equipement->getDesignation() ;  
+                    return $equipement->getNserie() . ' - ' . $equipement->getModele() ;  
                 },
                 'label' => 'Équipements disponibles',
                 'multiple' => true,  

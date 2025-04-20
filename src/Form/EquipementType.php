@@ -19,14 +19,6 @@ class EquipementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('n_bur', IntegerType::class, [
-                'label' => 'Numéro de bureau',
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('direction', TextType::class, [
-                'label' => 'Direction',
-                'attr' => ['class' => 'form-control'],
-            ])
             ->add('designation', TextType::class, [
                 'label' => 'Désignation',
                 'attr' => ['class' => 'form-control'],
@@ -61,8 +53,16 @@ class EquipementType extends AbstractType
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
                 'choice_label' => function ($utilisateur) {
-                    return $utilisateur->getNom() . ' ' . $utilisateur->getPren(). ' ' . $utilisateur->getIdU();
+                    return sprintf(
+                        'ID: %s | Num Bureau: %s | %s %s | Direction: %s ',
+                        $utilisateur->getIdU(),
+                        $utilisateur->getNbur(),
+                        $utilisateur->getNom(),
+                        $utilisateur->getPren(),
+                        $utilisateur->getDirection()?->getLibelle(),
+                    );
                 },
+
                 'placeholder' => 'Sélectionner un utilisateur',
                 'required' => false,
                 'attr' => ['class' => 'form-select'],

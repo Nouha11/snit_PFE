@@ -39,6 +39,7 @@
                                         <th>Num serie</th>
                                         <th>Inventaire</th>
                                         <th>État</th>
+                                        <th>consommable</th>
                                         <th>Utilisateur</th>
                                         <th>Actions</th>
                                     </tr>
@@ -47,8 +48,20 @@
                                 {% for equipement in equipements %}
                                     <tr>
                                         <td>{{ equipement.id_eq }}</td>
-                                        <td>{{ equipement.nbur }}</td>
-                                        <td>{{ equipement.direction }}</td>
+                                        <td>
+                                            {% if equipement.utilisateur %}
+                                                {{ equipement.utilisateur.nbur }}
+                                            {% else %}
+                                                <span class="text-muted">Non attribué</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if equipement.utilisateur %}
+                                                {{ equipement.utilisateur.direction.libelle }}
+                                            {% else %}
+                                                <span class="text-muted">Non attribué</span>
+                                            {% endif %}
+                                        </td>
                                         <td>{{ equipement.designation }}</td>
                                         <td>{{ equipement.Modele }}</td>
                                         <td>{{ equipement.nserie }}</td>
@@ -60,7 +73,14 @@
                                                                 equipement.Etat == 'Mauvais état' ? 'bg-danger' : 'bg-dark' }}">
                                                 {{ equipement.Etat }}
                                             </span>
-                                        </td>
+                                        </td>                                        
+                                        <td>
+                                            {% if equipement.consommable %}
+                                                {{ equipement.consommable.designation is not empty ? equipement.consommable.designation : equipement.consommable.idCons }}
+                                            {% else %}
+                                                Non spécifié
+                                            {% endif %}
+                                            </td>
                                         <td>
                                             {% if equipement.utilisateur %}
                                                 {{ equipement.utilisateur.nom }} {{ equipement.utilisateur.pren }}

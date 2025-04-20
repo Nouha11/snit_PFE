@@ -6,22 +6,6 @@
                     <h5>Informations générales</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form_label(form.n_bur) }}
-                            {{ form_widget(form.n_bur) }}
-                            <div class="invalid-feedback">
-                                {{ form_errors(form.n_bur) }}
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            {{ form_label(form.direction) }}
-                            {{ form_widget(form.direction) }}
-                            <div class="invalid-feedback">
-                                {{ form_errors(form.direction) }}
-                            </div>
-                        </div>
-                    </div>
                     <div class="mb-3">
                         {{ form_label(form.designation) }}
                         {{ form_widget(form.designation) }}
@@ -101,7 +85,8 @@
                             {{ form_errors(form.utilisateur) }}
                         </div>
                     </div>
-                </div>
+                    
+                    
             </div>
         </div>
     </div>
