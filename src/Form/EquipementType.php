@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Equipement;
 use App\Entity\Utilisateur;
 use App\Entity\Consommable;
+use App\Entity\Contrat;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -70,10 +71,17 @@ class EquipementType extends AbstractType
             ->add('consommable', EntityType::class, [
                 'class' => Consommable::class,
                 'choice_label' => function ($consommable) {
-                    // Adjust this based on your Consommable entity properties
                     return $consommable->getDesignation() ?? $consommable->getId_cons();
                 },
                 'placeholder' => 'Sélectionner un consommable',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('contrat', EntityType::class, [
+                'class' => Contrat::class,
+                'choice_label' => function ($contrat) {
+                    return $contrat->getNumContrat() ?? $contrat->getId();
+                },
+                'placeholder' => 'Sélectionner un contrat',
                 'attr' => ['class' => 'form-select'],
             ])
         ;

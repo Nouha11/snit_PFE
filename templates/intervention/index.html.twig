@@ -7,7 +7,7 @@
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary bg-gradient text-white d-flex justify-content-between align-items-center py-3">
             <h1 class="h3 mb-0">
-                <i class="bi bi-tools me-2"></i>Intervention contractuelle préventife
+                <i class="bi bi-tools me-2"></i>Intervention contractuelle 
             </h1>
             <a href="{{ path('app_intervention_new') }}" class="btn btn-light">
                 <i class="bi bi-plus-circle me-1"></i> Nouvelle Intervention
@@ -23,6 +23,7 @@
                             <th scope="col">Type</th>
                             <th scope="col">Date</th>
                             <th scope="col" style="width: 40%">Description</th>
+                            <th scope="col">Num Contrat</th>
                             <th scope="col" class="text-end pe-3">Actions</th>
                         </tr>
                     </thead>
@@ -43,8 +44,19 @@
                                     <span class="badge bg-secondary">{{ intervention.typeIntervention }}</span>
                                 {% endif %}
                             </td>
+
                             <td>{{ intervention.dateIntervention ? intervention.dateIntervention|date('d/m/Y H:i') : '' }}</td>
+
                             <td class="text-truncate" style="max-width: 300px;">{{ intervention.description }}</td>
+
+                            <td>
+                                {% if intervention.contrat %}
+                                    {{ intervention.contrat.numContrat }} 
+                                {% else %}
+                                    <span class="text-muted">Non attribué</span>
+                                {% endif %}
+                            </td>
+
                             <td class="text-end pe-3">
                                 <div class="btn-group" role="group">
                                     <a href="{{ path('app_intervention_show', {'id': intervention.id}) }}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Voir détails">

@@ -89,7 +89,28 @@
                     
             </div>
         </div>
-    </div>
+                        
+        <!-- New Contract Section -->
+
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Contrats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form_label(form.contrat) }}
+                        {{ form_widget(form.contrat) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.contrat) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>             
+        
+
     
     <div class="d-flex justify-content-between mt-4">
         <a href="{{ path('app_equipement_index') }}" class="btn btn-secondary">

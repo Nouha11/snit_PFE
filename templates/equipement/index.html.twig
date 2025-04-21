@@ -41,6 +41,7 @@
                                         <th>État</th>
                                         <th>consommable</th>
                                         <th>Utilisateur</th>
+                                        <th>Num Contrat</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -84,6 +85,13 @@
                                         <td>
                                             {% if equipement.utilisateur %}
                                                 {{ equipement.utilisateur.nom }} {{ equipement.utilisateur.pren }}
+                                            {% else %}
+                                                <span class="text-muted">Non attribué</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if equipement.contrat %}
+                                                {{ equipement.contrat.numContrat }} 
                                             {% else %}
                                                 <span class="text-muted">Non attribué</span>
                                             {% endif %}

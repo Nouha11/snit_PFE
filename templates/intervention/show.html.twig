@@ -71,25 +71,98 @@
                                         </div>
                                     </td>
                                 </tr>
-                                {% if intervention.equipment is defined %}
-                                <tr>
-                                    <th class="text-muted">Équipement</th>
-                                    <td>
-                                        {% if intervention.equipment %}
-                                            <a href="{{ path('app_equipment_show', {'id': intervention.equipment.id}) }}" class="btn btn-sm btn-outline-secondary">
-                                                <i class="bi bi-pc-display"></i> {{ intervention.equipment.name }}
-                                            </a>
-                                        {% else %}
-                                            <span class="text-muted">Aucun équipement associé</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endif %}
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+            
+            <!-- Équipement associé -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-info bg-gradient text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pc-display me-2"></i>Équipement associé
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if intervention.equipement %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="mb-1">{{ intervention.equipement.designation }}</h6>
+                                <p class="text-muted small mb-0">
+                                    <strong>Modèle:</strong> {{ intervention.equipement.Modele }} |
+                                    <strong>N° série:</strong> {{ intervention.equipement.Nserie }}
+                                </p>
+                            </div>
+                            <div>
+                                <span class="badge {{ intervention.equipement.Etat == 'Neuf' ? 'bg-success' : 
+                                                intervention.equipement.Etat == 'Bon état' ? 'bg-info' : 
+                                                intervention.equipement.Etat == 'État moyen' ? 'bg-warning' : 
+                                                intervention.equipement.Etat == 'Mauvais état' ? 'bg-danger' : 'bg-dark' }}">
+                                    {{ intervention.equipement.Etat }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <a href="{{ path('app_equipement_show', {'id_eq': intervention.equipement.id_eq}) }}" class="btn btn-outline-primary">
+                                <i class="bi bi-search me-1"></i> Voir les détails de l'équipement
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center p-3">
+                            <i class="bi bi-dash-circle text-muted fs-1"></i>
+                            <p class="text-muted mt-2">Aucun équipement associé à cette intervention</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Contrat associé (if applicable) -->
+            {% if intervention.contrat is defined %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-warning bg-gradient text-dark">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-earmark-text me-2"></i>Contrat associé
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if intervention.contrat %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="mb-1">{{ intervention.contrat.numContrat|default('Contrat #' ~ intervention.contrat.id) }}</h6>
+                                <p class="text-muted small mb-0">
+                                    <strong>Date Enregistrement:</strong> 
+                                    {{ intervention.contrat.dateEnregistrement|date('d/m/Y') }}
+                                </p>
+                                {% if intervention.contrat.statut is defined %}
+                                <div>
+                                    <span class="badge {{ intervention.contrat.statut == 'Actif' ? 'bg-success' : 
+                                                    intervention.contrat.statut == 'En attente' ? 'bg-warning' : 
+                                                    intervention.contrat.statut == 'Expiré' ? 'bg-danger' : 'bg-secondary' }}">
+                                        {{ intervention.contrat.statut }}
+                                    </span>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                        
+                        <div class="d-grid">
+                            <a href="{{ path('app_contrat_show', {'id': intervention.contrat.id}) }}" class="btn btn-outline-warning text-dark">
+                                <i class="bi bi-search me-1"></i> Voir les détails du contrat
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center p-3">
+                            <i class="bi bi-dash-circle text-muted fs-1"></i>
+                            <p class="text-muted mt-2">Aucun contrat associé à cette intervention</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
         </div>
         
         <div class="col-md-4">
@@ -112,7 +185,36 @@
                 </div>
             </div>
             
-            <!-- Additional info card - can be customized as needed -->
+            <!-- Technician info, if available -->
+<!--             {% if intervention.technicien is defined and intervention.technicien %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Technicien</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-light rounded-circle p-3 me-3">
+                            <i class="bi bi-person fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ intervention.technicien.nom|default('') }} {{ intervention.technicien.prenom|default('') }}</h6>
+                            {% if intervention.technicien.email is defined %}
+                            <p class="text-muted small mb-0">
+                                <i class="bi bi-envelope me-1"></i> {{ intervention.technicien.email }}
+                            </p>
+                            {% endif %}
+                            {% if intervention.technicien.telephone is defined %}
+                            <p class="text-muted small mb-0">
+                                <i class="bi bi-telephone me-1"></i> {{ intervention.technicien.telephone }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %} -->
+            
+            <!-- Status info card -->
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">Informations complémentaires</h5>

@@ -40,6 +40,11 @@ class Contrat
         $this->interventions = new ArrayCollection();
 
     }
+    public function __toString(): string
+    {
+        return $this->numContrat ?? '';
+    }
+
     
     public function getInterventions(): Collection
     {

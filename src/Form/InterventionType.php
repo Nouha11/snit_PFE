@@ -33,10 +33,16 @@ class InterventionType extends AbstractType
             ->add('equipement', EntityType::class, [
                 'class' => Equipement::class,
                 'choice_label' => 'modele',
+                'placeholder' => 'Sélectionner un modele',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
             ])
             ->add('contrat', EntityType::class, [
                 'class' => Contrat::class,
                 'choice_label' => 'numContrat',
+                'placeholder' => 'Sélectionner un contrat',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
             ])
         ;
     }

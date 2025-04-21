@@ -150,7 +150,36 @@
                                     </div>
                                 </div>
                             </div>
+
+                        <!-- Contract Section -->
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5>Contrat</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if equipement.contrat %}
+                                            <p>
+                                                <span class="badge 
+                                                    {{ equipement.contrat == 'curative' ? 'bg-info' : 
+                                                       equipement.contrat == 'preventive' ? 'bg-primary' : 
+                                                       equipement.contrat == 'contractuelle' ? 'bg-success' : 'bg-secondary' }}">
+                                                    {{ equipement.contrat }}
+                                                </span>
+                                            </p>
+                                            <div class="d-grid">
+                                                <a href="{{ path('app_contrat_show', {'id': equipement.contrat.id}) }}" class="btn btn-outline-warning text-dark">
+                                                    <i class="bi bi-search me-1"></i> Voir les détails du contrat
+                                                </a>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">Aucun contrat associé à cet équipement</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         
                         <div class="text-center mt-4">
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
