@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Consommable;
+use App\Entity\Equipement;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -46,6 +49,22 @@ class ConsommableType extends AbstractType
                 'label' => 'Valeur',
                 'attr' => ['class' => 'form-control', 'min' => 0]
             ])
+            ->add('equipements', EntityType::class, [
+                'class' => Equipement::class,
+                'choice_label' => function ($equipement) {
+                    return $equipement->getNserie() . ' - ' . $equipement->getModele() ;  
+                },
+                'label' => 'Équipements disponibles',
+                'multiple' => true,  
+                'expanded' => true,
+                'required' => false,
+                'placeholder' => 'Aucun équipement disponible',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('e')
+                        ->where('e.consommable IS NULL');
+                },
+                'attr' => ['class' => 'form-control'],
+            ]);
         ;
     }
 

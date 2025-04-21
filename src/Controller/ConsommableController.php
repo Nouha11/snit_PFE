@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Consommable;
+use App\Entity\Equipement;
 use App\Form\ConsommableType;
 use App\Repository\ConsommableRepository;
+use App\Repository\EquipementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -31,6 +34,13 @@ class ConsommableController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($consommable);
+
+            $equipements = $form->get('equipements')->getData();
+            foreach ($equipements as $equipement) {
+                $equipement->setConsommable($consommable);
+                $entityManager->persist($equipement);
+            }
+
             $entityManager->flush();
 
             $this->addFlash('success', 'Le consommable a été créé avec succès');
@@ -56,10 +66,31 @@ class ConsommableController extends AbstractController
     public function edit(Request $request, int $id_cons, EntityManagerInterface $entityManager): Response
     {
         $consommable = $entityManager->getRepository(Consommable::class)->find($id_cons);
+        
+        if (!$consommable) {
+            throw $this->createNotFoundException('Consommable non trouvé.');
+        }
+
         $form = $this->createForm(ConsommableType::class, $consommable);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $selectedEquipement = $form->get('equipements')->getData();
+
+            foreach ($consommable->getEquipements()->toArray() as $existingEquipement) {
+                if (!$selectedEquipement->contains($existingEquipement)) {
+                    $consommable->removeEquipement($existingEquipement);
+                    $existingEquipement->setConsommable(null);
+                    $entityManager->persist($existingEquipement);
+                }
+            }
+            
+            $equipements = $form->get('equipements')->getData();
+            foreach ($equipements as $equipement) {
+                $equipement->setConsommable($consommable);
+                $entityManager->persist($equipement);
+            }
+
             $entityManager->flush();
 
             $this->addFlash('success', 'Le consommable a été modifié avec succès');
@@ -77,12 +108,37 @@ class ConsommableController extends AbstractController
     {
         $consommable = $entityManager->getRepository(Consommable::class)->find($id_cons);
 
-        if ($this->isCsrfTokenValid('delete'.$consommable->getId(), $request->request->get('_token'))) {
+        if (!$consommable) {
+            throw $this->createNotFoundException('Consommable non trouvé.');
+        }
+
+        $csrfToken = $request->request->get('_token');
+        if ($this->isCsrfTokenValid('delete'.$consommable->getId(), $csrfToken)) {
+            foreach ($consommable->getEquipements() as $equipement) {
+                $equipement->setConsommable(null);
+            }
+
             $entityManager->remove($consommable);
             $entityManager->flush();
             $this->addFlash('success', 'Le consommable a été supprimé avec succès');
+        } else {
+            $this->addFlash('error', 'Invalid CSRF token.');
         }
 
         return $this->redirectToRoute('app_consommable_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/consommable/remove-equipment/{id}', name: 'app_consommable_remove_equipment', methods: ['POST'])]
+    public function removeEquipment(Equipement $equipement,int $id_cons, EntityManagerInterface $entityManager): Response
+    {
+        $consommable = $entityManager->getRepository(Consommable::class)->find($id_cons);
+        $consommable = $equipement->getConsommable();
+        if ($consommable) {
+            $consommable->removeEquipement($equipement);
+            $entityManager->flush();
+        }
+
+        return new JsonResponse(['status' => 'ok']);
+    }
+
 }

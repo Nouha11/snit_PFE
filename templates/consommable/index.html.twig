@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}?v={{ "now"|date("U") }}">
 {% endblock %}
 
 {% block body %}
@@ -48,7 +48,6 @@
                                 <td>{{ consommable.designation }}</td>
                                 <td>{{ consommable.modele }}</td>
                                 <td>
-                                    <span class="color-badge" style="background-color: '{{ consommable.couleur }}'" title="{{ consommable.couleur }}"></span>
                                     {{ consommable.couleur }}
                                 </td>
                                 <td>{{ consommable.quantite }}</td>

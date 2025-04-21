@@ -100,16 +100,16 @@
                                                 <tr>
                                                     <th>
                                                         Consommable associé
-                                                        <a href="{{ path('app_consommable_show', {'id_cons': equipement.consommable.id}) }}">
-                                                            <i class="fas fa-eye me-1"></i> 
-                                                        </a>
                                                     </th>
                                                     <td>
                                                         {% if equipement.consommable %}
+                                                            <a href="{{ path('app_consommable_show', {'id_cons': equipement.consommable.id}) }}" class="btn btn-sm btn-info" title="Détails">
+                                                                <i class="fas fa-eye"></i> 
+                                                            </a>
                                                             {{ equipement.consommable.designation is not empty ? equipement.consommable.designation : equipement.consommable.idCons }}
 
                                                         {% else %}
-                                                            Non spécifié
+                                                            <span class="text-muted">Non spécifié</span>
                                                         {% endif %}
                                                     </td>
                                                 </tr>

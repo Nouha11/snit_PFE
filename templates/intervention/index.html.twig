@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Interventions{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary bg-gradient text-white d-flex justify-content-between align-items-center py-3">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-tools me-2"></i>Intervention contractuelle préventife
+            </h1>
+            <a href="{{ path('app_intervention_new') }}" class="btn btn-light">
+                <i class="bi bi-plus-circle me-1"></i> Nouvelle Intervention
+            </a>
+        </div>
+        
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col" class="ps-3">#</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Date</th>
+                            <th scope="col" style="width: 40%">Description</th>
+                            <th scope="col" class="text-end pe-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for intervention in interventions %}
+                        <tr>
+                            <td class="ps-3">{{ intervention.id }}</td>
+                            <td>
+                                {% if intervention.typeIntervention == 'curative' %}
+                                    <span class="badge bg-danger">Curative</span>
+                                {% elseif intervention.typeIntervention == 'preventive' %}
+                                    <span class="badge bg-success">Préventive</span>
+                                {% elseif intervention.typeIntervention == 'contractuelle' %}
+                                    <span class="badge bg-info">Contractuelle</span>
+                                {% elseif intervention.typeIntervention == 'quotidienne' %}
+                                    <span class="badge bg-warning">Quotidienne</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ intervention.typeIntervention }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ intervention.dateIntervention ? intervention.dateIntervention|date('d/m/Y H:i') : '' }}</td>
+                            <td class="text-truncate" style="max-width: 300px;">{{ intervention.description }}</td>
+                            <td class="text-end pe-3">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ path('app_intervention_show', {'id': intervention.id}) }}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Voir détails">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ path('app_intervention_edit', {'id': intervention.id}) }}" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ intervention.id }}" title="Supprimer">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal{{ intervention.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ intervention.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ intervention.id }}">Confirmer la suppression</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Êtes-vous sûr de vouloir supprimer cette intervention ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                <form method="post" action="{{ path('app_intervention_delete', {'id': intervention.id}) }}" style="display: inline-block;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ intervention.id) }}">
+                                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="alert alert-info mb-0">
+                                    <i class="bi bi-info-circle me-2"></i>Aucune intervention trouvée.
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <small class="text-muted">Total: {{ interventions|length }} intervention(s)</small>
+            </div>
+            <nav aria-label="Page navigation">
+                <!-- Pagination could be added here if needed -->
+            </nav>
+        </div>
+    </div>
+    
+    <!-- Initialize tooltips -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+    </script>
+</div>
+{% endblock %}

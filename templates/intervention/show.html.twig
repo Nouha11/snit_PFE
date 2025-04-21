@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'intervention{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_intervention_index') }}">Interventions</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Détails #{{ intervention.id }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary bg-gradient text-white d-flex justify-content-between align-items-center">
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Détails de l'intervention
+                    </h1>
+                    
+                    {% if intervention.typeIntervention == 'curative' %}
+                        <span class="badge bg-danger fs-6">Curative</span>
+                    {% elseif intervention.typeIntervention == 'preventive' %}
+                        <span class="badge bg-success fs-6">Préventive</span>
+                    {% elseif intervention.typeIntervention == 'contractuelle' %}
+                        <span class="badge bg-info fs-6">Contractuelle</span>
+                    {% elseif intervention.typeIntervention == 'quotidienne' %}
+                        <span class="badge bg-warning fs-6">Quotidienne</span>
+                    {% else %}
+                        <span class="badge bg-secondary fs-6">{{ intervention.typeIntervention }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 30%;" class="text-muted">Référence</th>
+                                    <td><strong>#{{ intervention.id }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Type d'intervention</th>
+                                    <td>{{ intervention.typeIntervention|capitalize }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Date d'intervention</th>
+                                    <td>
+                                        {% if intervention.dateIntervention %}
+                                            <i class="bi bi-calendar-event me-1"></i>
+                                            {{ intervention.dateIntervention|date('d/m/Y') }}
+                                            <span class="text-muted ms-2">
+                                                <i class="bi bi-clock me-1"></i>
+                                                {{ intervention.dateIntervention|date('H:i') }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">Non définie</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Description</th>
+                                    <td>
+                                        <div class="p-3 bg-light rounded">
+                                            {% if intervention.description %}
+                                                {{ intervention.description|nl2br }}
+                                            {% else %}
+                                                <span class="text-muted fst-italic">Aucune description fournie</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% if intervention.equipment is defined %}
+                                <tr>
+                                    <th class="text-muted">Équipement</th>
+                                    <td>
+                                        {% if intervention.equipment %}
+                                            <a href="{{ path('app_equipment_show', {'id': intervention.equipment.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-pc-display"></i> {{ intervention.equipment.name }}
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted">Aucun équipement associé</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_intervention_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Retour à la liste
+                        </a>
+                        <a href="{{ path('app_intervention_edit', {'id': intervention.id}) }}" class="btn btn-primary">
+                            <i class="bi bi-pencil-square me-1"></i> Modifier l'intervention
+                        </a>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash me-1"></i> Supprimer l'intervention
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional info card - can be customized as needed -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Informations complémentaires</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Utilisez les actions pour gérer cette intervention.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer cette intervention ?</p>
+                <p class="mb-0"><strong>Cette action est irréversible.</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                {{ include('intervention/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

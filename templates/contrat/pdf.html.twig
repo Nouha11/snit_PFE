@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Contrat PDF</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        /* Equipment Section */
+        .equipment-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .equipment-list li {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+
+        .equipment-list li .label {
+            font-weight: bold;
+        }
+
+        .equipment-list li .value {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Détails du Contrat</h1>
+
+    <h2>Informations du Contrat</h2>
+    <p><strong>ID:</strong> {{ contrat.id }}</p>
+    <p><strong>Num Contrat:</strong> {{ contrat.numContrat }}</p>
+    <p><strong>Référence:</strong> {{ contrat.reference }}</p>
+    <p><strong>Date d'enregistrement:</strong> {{ contrat.dateEnregistrement|date('Y-m-d H:i:s') }}</p>
+    <p><strong>Num d'enregistrement:</strong> {{ contrat.numEnregistrement }}</p>
+
+    <h2>Équipements Associés</h2>
+    {% if contrat.equipements is not empty %}
+        <ul class="equipment-list">
+            {% for equipement in contrat.equipements %}
+                <li>
+                    <div><span class="label">ID:</span><span class="value">{{ equipement.id_eq }}</span></div>
+                    <div><span class="label">Numéro de Série:</span><span class="value">{{ equipement.Nserie }}</span></div>
+                    <div><span class="label">Modèle:</span><span class="value">{{ equipement.modele }}</span></div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun équipement associé</p>
+    {% endif %}
+
+</body>
+</html>

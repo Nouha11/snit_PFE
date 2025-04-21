@@ -1,0 +1,444 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Contrat{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* Core styling overrides */
+.form-control:focus, .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-text {
+    font-size: 0.875rem;
+}
+
+.required:after {
+    content: " *";
+    color: var(--bs-danger);
+}
+
+/* Card hover effects */
+.hover-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animated-element {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+
+/* Progress bar animation */
+.progress-bar {
+    transition: width 1s ease;
+}
+
+/* Custom button styling */
+.btn-floating {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    z-index: 1000;
+}
+
+.btn-floating i {
+    font-size: 1.5rem;
+}
+
+/* Custom alerts */
+.custom-alert {
+    border-left: 4px solid;
+    background-color: rgba(var(--bs-info-rgb), 0.1);
+    border-color: var(--bs-info);
+}
+
+/* Enhanced focus states for accessibility */
+a:focus, button:focus, input:focus, select:focus, textarea:focus {
+    outline: 3px solid rgba(13, 110, 253, 0.25);
+    outline-offset: 2px;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <!-- Header with actions -->
+    <div class="d-flex justify-content-between align-items-center mb-4 animated-element">
+        <div>
+            <h1 class="mb-0 fw-bold">
+                <i class="fas fa-file-contract text-primary me-2"></i>
+                Nouveau Contrat
+            </h1>
+            <p class="text-muted mb-0">Création d'un nouveau contrat dans le système</p>
+        </div>
+        <div>
+            <a href="{{ path('app_contrat_index') }}" class="btn btn-outline-secondary shadow-sm">
+                <i class="fas fa-arrow-left me-2"></i>
+                Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <!-- Progress indicator -->
+    <div class="card border-0 shadow-sm mb-4 animated-element delay-1">
+        <div class="card-body py-3">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <span class="badge rounded-pill bg-primary px-3 py-2">Étape 1/2</span>
+                </div>
+                <div class="col">
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <small class="text-muted">Informations générales</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form card -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow animated-element delay-2">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="fas fa-pen me-2"></i>
+                        Détails du contrat
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Alert for form tips -->
+                    <div class="alert custom-alert d-flex align-items-center mb-4" role="alert">
+                        <i class="fas fa-info-circle text-info me-3 fs-4"></i>
+                        <div>
+                            Tous les champs marqués d'un <span class="text-danger">*</span> sont obligatoires.
+                            Remplissez le formulaire ci-dessous pour créer un nouveau contrat.
+                        </div>
+                    </div>
+                
+                    {{ include('contrat/_form.html.twig', {'button_label': 'Créer le contrat', 'button_class': 'btn-primary btn-lg'}) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Helper sidebar -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <!-- Tips card -->
+            <div class="card border-0 shadow mb-4 hover-card animated-element delay-2">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Conseils
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-0 ps-0">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Assurez-vous que le numéro de contrat est unique
+                        </li>
+                        <li class="list-group-item border-0 ps-0">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            La référence doit suivre le format standard
+                        </li>
+                        <li class="list-group-item border-0 ps-0">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Vous pourrez associer des équipements après création
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-light">
+                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#tipsModal">
+                        <small><i class="fas fa-external-link-alt me-1"></i> Plus d'informations</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Required fields card -->
+            <div class="card border-0 shadow mb-4 hover-card animated-element delay-3">
+                <div class="card-header bg-warning py-3">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Champs obligatoires
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-asterisk text-danger me-2 small"></i>
+                            <span>Numéro de contrat</span>
+                            <i class="fas fa-question-circle text-muted ms-auto" data-bs-toggle="tooltip" data-bs-placement="left" title="Format requis: CONT-YYYY-XXXX"></i>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-asterisk text-danger me-2 small"></i>
+                            <span>Référence</span>
+                            <i class="fas fa-question-circle text-muted ms-auto" data-bs-toggle="tooltip" data-bs-placement="left" title="Format requis: REF-XXXXXXXX"></i>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="fas fa-asterisk text-danger me-2 small"></i>
+                            <span>Date d'enregistrement</span>
+                            <i class="fas fa-question-circle text-muted ms-auto" data-bs-toggle="tooltip" data-bs-placement="left" title="Format: JJ/MM/AAAA"></i>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Recent contracts card -->
+            <div class="card border-0 shadow hover-card animated-element delay-3">
+                <div class="card-header bg-secondary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-history me-2"></i>
+                            Contrats récents
+                        </h5>
+                        <span class="badge bg-light text-dark rounded-pill">3</span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <div class="me-3">
+                                <span class="avatar-initials bg-primary text-white">C</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">CONT-2023-0458</h6>
+                                    <small class="text-primary fw-bold">3j</small>
+                                </div>
+                                <small class="text-muted">Référence: REF-20230458</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <div class="me-3">
+                                <span class="avatar-initials bg-success text-white">C</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">CONT-2023-0457</h6>
+                                    <small class="text-primary fw-bold">5j</small>
+                                </div>
+                                <small class="text-muted">Référence: REF-20230457</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <div class="me-3">
+                                <span class="avatar-initials bg-info text-white">C</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">CONT-2023-0456</h6>
+                                    <small class="text-primary fw-bold">7j</small>
+                                </div>
+                                <small class="text-muted">Référence: REF-20230456</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer bg-light py-2">
+                    <a href="{{ path('app_contrat_index') }}" class="text-decoration-none d-flex justify-content-between align-items-center">
+                        <small><i class="fas fa-list me-1"></i> Voir tous les contrats</small>
+                        <i class="fas fa-chevron-right small"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help floating button -->
+<button class="btn btn-primary btn-floating" type="button" data-bs-toggle="modal" data-bs-target="#helpModal">
+    <i class="fas fa-question"></i>
+</button>
+
+<!-- Tips Modal -->
+<div class="modal fade" id="tipsModal" tabindex="-1" aria-labelledby="tipsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="tipsModalLabel">Guide de création d'un contrat</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="accordion" id="tipsAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                Format du numéro de contrat
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="heading1" data-bs-parent="#tipsAccordion">
+                            <div class="accordion-body">
+                                <p>Le numéro de contrat doit suivre le format <code>CONT-YYYY-XXXX</code> où :</p>
+                                <ul>
+                                    <li><code>YYYY</code> représente l'année en cours</li>
+                                    <li><code>XXXX</code> est un numéro séquentiel à 4 chiffres</li>
+                                </ul>
+                                <p>Exemple: <code>CONT-2023-0459</code></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                Format de la référence
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#tipsAccordion">
+                            <div class="accordion-body">
+                                <p>La référence doit suivre le format <code>REF-XXXXXXXX</code> où :</p>
+                                <ul>
+                                    <li><code>XXXXXXXX</code> est une combinaison alphanumérique unique</li>
+                                </ul>
+                                <p>Exemple: <code>REF-20230459</code></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                Association d'équipements
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#tipsAccordion">
+                            <div class="accordion-body">
+                                <p>Après avoir créé le contrat, vous pourrez associer des équipements:</p>
+                                <ol>
+                                    <li>Accédez aux détails du contrat</li>
+                                    <li>Cliquez sur "Associer un équipement"</li>
+                                    <li>Sélectionnez les équipements disponibles</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="helpModalLabel">Besoin d'aide ?</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-headset" style="font-size: 3rem; color: var(--bs-primary);"></i>
+                    <h4 class="mt-3">Comment pouvons-nous vous aider ?</h4>
+                </div>
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="fas fa-book text-primary me-3"></i>
+                        <div>
+                            <h6 class="mb-1">Consulter la documentation</h6>
+                            <small class="text-muted">Guides et tutoriels détaillés</small>
+                        </div>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="fas fa-video text-primary me-3"></i>
+                        <div>
+                            <h6 class="mb-1">Voir les tutoriels vidéo</h6>
+                            <small class="text-muted">Apprenez par l'exemple</small>
+                        </div>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="fas fa-comments text-primary me-3"></i>
+                        <div>
+                            <h6 class="mb-1">Contacter le support</h6>
+                            <small class="text-muted">Nous sommes là pour vous aider</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Additional custom styles */
+.avatar-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+    
+    // Form validation enhancements
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Add validation feedback
+                const invalidFields = form.querySelectorAll(':invalid');
+                invalidFields.forEach(field => {
+                    // Find the closest form group and add an error message if not already present
+                    const formGroup = field.closest('.mb-3');
+                    if (formGroup && !formGroup.querySelector('.invalid-feedback')) {
+                        const feedback = document.createElement('div');
+                        feedback.className = 'invalid-feedback';
+                        feedback.textContent = 'Ce champ est requis';
+                        field.parentNode.appendChild(feedback);
+                    }
+                });
+            }
+            form.classList.add('was-validated');
+        });
+    }
+});
+</script>
+{% endblock %}

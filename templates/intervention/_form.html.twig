@@ -1,0 +1,117 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="row g-3">
+        {% if form.typeIntervention is defined %}
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                {{ form_label(form.typeIntervention, 'Type d\'intervention', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.typeIntervention, {'attr': {'class': 'form-select' ~ (form.typeIntervention.vars.valid ? '' : ' is-invalid')}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.typeIntervention) }}
+                </div>
+                {% if form.typeIntervention.vars.help is defined %}
+                    <small class="form-text text-muted">{{ form.typeIntervention.vars.help }}</small>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if form.dateIntervention is defined %}
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                {{ form_label(form.dateIntervention, 'Date d\'intervention', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                    {{ form_widget(form.dateIntervention, {'attr': {'class': 'form-control' ~ (form.dateIntervention.vars.valid ? '' : ' is-invalid')}}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.dateIntervention) }}
+                    </div>
+                </div>
+                {% if form.dateIntervention.vars.help is defined %}
+                    <small class="form-text text-muted">{{ form.dateIntervention.vars.help }}</small>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if form.equipment is defined %}
+        <div class="col-12 mb-3">
+            <div class="form-group">
+                {{ form_label(form.equipment, 'Équipement concerné', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.equipment, {'attr': {'class': 'form-select' ~ (form.equipment.vars.valid ? '' : ' is-invalid')}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.equipment) }}
+                </div>
+                {% if form.equipment.vars.help is defined %}
+                    <small class="form-text text-muted">{{ form.equipment.vars.help }}</small>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if form.description is defined %}
+        <div class="col-12 mb-3">
+            <div class="form-group">
+                {{ form_label(form.description, 'Description détaillée', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid'), 'rows': '5'}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.description) }}
+                </div>
+                {% if form.description.vars.help is defined %}
+                    <small class="form-text text-muted">{{ form.description.vars.help }}</small>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% for field in form %}
+            {% if field.vars.name not in ['typeIntervention', 'dateIntervention', 'description', 'equipment'] and not field.rendered %}
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(field, {'attr': {'class': field.vars.attr.class|default('form-control') ~ (field.vars.valid ? '' : ' is-invalid')}}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(field) }}
+                    </div>
+                    {% if field.vars.help is defined %}
+                        <small class="form-text text-muted">{{ field.vars.help }}</small>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+        
+        <div class="col-12 mt-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="submit" class="btn {{ button_class|default('btn-success') }} px-4">
+                    <i class="bi bi-check-circle me-2"></i>{{ button_label|default('Enregistrer') }}
+                </button>
+                
+                <button type="reset" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>Réinitialiser
+                </button>
+            </div>
+        </div>
+    </div>
+{{ form_end(form) }}
+
+<script>
+// JavaScript for form validation
+(function() {
+    'use strict'
+    
+    // Fetch all forms that need validation
+    var forms = document.querySelectorAll('.needs-validation')
+    
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>

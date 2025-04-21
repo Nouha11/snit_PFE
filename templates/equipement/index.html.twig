@@ -78,7 +78,7 @@
                                             {% if equipement.consommable %}
                                                 {{ equipement.consommable.designation is not empty ? equipement.consommable.designation : equipement.consommable.idCons }}
                                             {% else %}
-                                                Non spécifié
+                                                <span class="text-muted">Non spécifié</span>
                                             {% endif %}
                                             </td>
                                         <td>
@@ -133,7 +133,9 @@
                                     </tr>
                                 {% else %}
                                     <tr>
-                                        <td colspan="9" class="text-center">Aucun équipement trouvé</td>
+                                        <td colspan="9" class="text-center">
+                                            <span class="text-muted">Aucun équipement associé</span>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

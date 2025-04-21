@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}?v={{ "now"|date("U") }}">
 {% endblock %}
 
 {% block body %}
@@ -36,4 +36,40 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.remove-equipment');
+    
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const equipmentId = this.dataset.equipmentId;
+    
+                    if (confirm("Voulez-vous vraiment retirer cet équipement ?")) {
+                        fetch(`/consommable/remove-equipment/${equipmentId}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token("remove_equipement") }}'
+                            }
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                const item = document.getElementById('equipment-item-' + equipmentId);
+                                if (item) item.remove();
+    
+                                if (document.querySelectorAll('#equipment-list li').length === 0) {
+                                    document.getElementById('equipment-list').remove();
+                                    document.getElementById('no-equipment-message').classList.remove('d-none');
+                                }
+                            } else {
+                                alert("Échec de la suppression.");
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    
 {% endblock %}

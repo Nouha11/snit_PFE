@@ -1,0 +1,95 @@
+{# _form.html.twig #}
+{{ form_start(form, {'attr': {'class': 'contract-form'}}) }}
+
+<div class="form-container">
+    {% if form.vars.errors|length > 0 %}
+        <div class="alert alert-danger">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
+    
+    <div class="row">
+        {% for field in form %}
+            {% if field.vars.name != '_token' %}
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {% if field.vars.name == 'equipements' %}
+                            <div class="form-check">
+                                {{ form_widget(field, {'attr': {'class': 'form-check-input'}}) }}
+                            </div>
+                        {% else %}
+                            {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                        {% endif %}
+                        
+                        {% if field.vars.errors|length > 0 %}
+                            <div class="form-error-message text-danger mt-1">
+                                {{ form_errors(field) }}
+                            </div>
+                        {% endif %}
+                        {% if field.vars.help is defined and field.vars.help %}
+                            <small class="form-text text-muted">{{ field.vars.help }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+    <div class="form-actions mt-4">
+        <button type="submit" class="btn {{ button_class|default('btn-success') }}">
+            {% if button_icon is defined %}
+                <i class="{{ button_icon }} me-1"></i>
+            {% endif %}
+            {{ button_label|default('Save') }}
+        </button>
+        
+        {% if show_cancel|default(false) %}
+            <a href="{{ cancel_url|default('#') }}" class="btn btn-secondary ms-2">Cancel</a>
+        {% endif %}
+    </div>
+</div>
+
+{{ form_end(form) }}
+
+<style>
+    .contract-form {
+        width: 100%;
+    }
+    
+    .form-container {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #495057;
+    }
+    
+    .form-control {
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        padding: 0.375rem 0.75rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .form-text {
+        display: block;
+        margin-top: 0.25rem;
+    }
+    
+    .form-actions {
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+</style>

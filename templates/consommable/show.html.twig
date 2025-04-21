@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}?v={{ "now"|date("U") }}">
 {% endblock %}
 
 {% block body %}
@@ -41,7 +41,6 @@
                             <div class="detail-item">
                                 <span class="detail-label">Couleur:</span>
                                 <span class="detail-value">
-                                    <span class="color-badge" style="background-color: '{{ consommable.couleur }}'" title="{{ consommable.couleur }}"></span>
                                     {{ consommable.couleur }}
                                 </span>
                             </div>
@@ -97,7 +96,7 @@
                                             <td>{{ equipement.modele }}</td>
                                             <td>
                                                 <a href="{{ path('app_equipement_show', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-info">
-                                                    <i class="fas fa-eye"></i> Voir Equipement
+                                                    <i class="fas fa-eye"></i> Détails
                                                 </a>
                                             </td>
                                         </tr>

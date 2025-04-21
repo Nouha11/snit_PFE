@@ -26,9 +26,83 @@
         </div>
     </div>
 
+    <div class="row">
+        <h5 class="bg-light border-start border-4 border-primary px-3 py-2 rounded fw-semibold">
+            Équipements
+        </h5>
+        <div class="col-md-6 mb-3">
+            <h6>Équipements actuels</h6>
+            {% if consommable.equipements is not empty %}
+            <ul class="list-group" id="equipment-list">
+                {% for equipement in consommable.equipements %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start" id="equipment-item-{{ equipement.id_eq }}">
+                        <div class="ms-2 me-auto">
+                            <div><strong>ID:</strong> {{ equipement.id_eq }}</div>
+                            <div><strong>N° Série:</strong> {{ equipement.Nserie }}</div>
+                            <div><strong>Modèle:</strong> {{ equipement.modele }}</div>
+                        </div>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-danger remove-equipment"
+                            data-equipment-id="{{ equipement.id_eq }}"
+                            title="Retirer cet équipement"
+                        >
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <div id="no-equipment-message"><span class="text-muted">Aucun équipement associé</span></div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <h6>Gérer les équipements</h6>
+        
+            <!-- Select/Deselect All Buttons -->
+            <div class="mb-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-sm btn-outline-primary" id="select-all">Tout sélectionner</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect-all">Tout désélectionner</button>
+            </div>
+        
+            <!-- Scrollable Box -->
+            <div class="form-check-list border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                {% for equipement in form.equipements %}
+                    <div class="form-check mb-2">
+                        {{ form_widget(equipement, { 'attr': {'class': 'form-check-input'} }) }}
+                        {{ form_label(equipement, null, { 'label_attr': {'class': 'form-check-label'} }) }}
+                    </div>
+                {% endfor %}
+                {{ form_errors(form.equipements) }}
+            </div>
+        
+            <small class="text-muted">Cochez pour assigner un équipement, décochez pour retirer</small>
+        </div>
+        
+        
+    </div>
+
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
         <button class="btn btn-primary btn-lg">
             <i class="fas fa-save me-1"></i> {{ button_label|default('Enregistrer') }}
         </button>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAllBtn = document.getElementById('select-all');
+            const deselectAllBtn = document.getElementById('deselect-all');
+            const checkboxes = document.querySelectorAll('.form-check-input');
+    
+            selectAllBtn.addEventListener('click', function () {
+                checkboxes.forEach(cb => cb.checked = true);
+            });
+    
+            deselectAllBtn.addEventListener('click', function () {
+                checkboxes.forEach(cb => cb.checked = false);
+            });
+        });
+    </script>
+    
 {{ form_end(form) }}

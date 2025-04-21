@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Contract{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .contract-form-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        .page-title {
+            color: #3c4b64;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .action-buttons {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .back-btn {
+            color: #6c757d;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .back-btn i {
+            margin-right: 5px;
+        }
+        
+        .back-btn:hover {
+            color: #495057;
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="contract-form-container">
+                <h1 class="page-title">Edit Contract</h1>
+                
+                {{ include('contrat/_form.html.twig', {'button_label': 'Update', 'button_class': 'btn btn-primary'}) }}
+                
+                <div class="action-buttons">
+                    <a href="{{ path('app_contrat_index') }}" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> Back to list
+                    </a>
+                    {{ include('contrat/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\EquipementRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EquipementRepository::class)]
@@ -39,7 +40,25 @@ class Equipement
     #[ORM\JoinColumn(name: "consommable_id", referencedColumnName: "id_cons", nullable: true)]
     private ?Consommable $consommable = null;
     
+    #[ORM\ManyToOne(targetEntity: Contrat::class, inversedBy: 'equipements')]
+    #[ORM\JoinColumn(name: "contrat_id", referencedColumnName: "id", nullable: true)]
+    private ?Contrat $contrat = null;
 
+    #[ORM\OneToMany(mappedBy: 'equipement', targetEntity: Intervention::class, cascade: ['persist', 'remove'])]
+    private Collection $interventions;
+
+    public function getContrat(): ?Contrat
+    {
+        return $this->contrat;
+    }
+    
+    public function setContrat(?Contrat $contrat): static
+    {
+        $this->contrat = $contrat;
+    
+        return $this;
+    }
+    
     public function getUtilisateur(): ?Utilisateur 
     { return $this->utilisateur; }
     
@@ -130,4 +149,29 @@ class Equipement
         $this->Etat = $Etat;
         return $this;
     }
+
+    public function getInterventions(): Collection
+    {
+        return $this->interventions;
+    }
+
+    public function addIntervention(Intervention $intervention): static
+    {
+        if (!$this->interventions->contains($intervention)) {
+            $this->interventions[] = $intervention;
+            $intervention->setEquipement($this); 
+        }
+        return $this;
+    }
+
+    public function removeIntervention(Intervention $intervention): static
+    {
+        if ($this->interventions->removeElement($intervention)) {
+            if ($intervention->getEquipement() === $this) {
+                $intervention->setEquipement(null); 
+            }
+        }
+        return $this;
+    }
+
 }
