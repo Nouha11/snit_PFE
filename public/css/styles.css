@@ -1,0 +1,19 @@
+:root {
+    --sidebar-width: 260px;
+    --sidebar-bg: #3a3f48;
+    --sidebar-text: #fff;
+    --sidebar-hover: #5a6268;
+    --sidebar-active: #2c3e50;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f8f9fa;
+    overflow-x: hidden;
+}
+
+.wrapper {
+    min-height: 100vh;
+    width: 100%;
+}
+

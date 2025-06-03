@@ -1,0 +1,197 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil Admin{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #66ea99 0%, #24c00f 100%);
+            color: white;
+            padding: 4rem 0;
+        }
+        .feature-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .icon-large {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .quick-action-btn {
+            margin: 0.5rem;
+            min-width: 120px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Bienvenue dans votre espace d'administration</h1>
+                <p class="lead mb-4">
+                    Gérez efficacement vos utilisateurs, équipements, contrats et bien plus encore depuis cette interface centralisée.
+                </p>
+
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <i class="bi bi-shield-check" style="font-size: 10rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-5 fw-bold">Modules disponibles</h2>
+                <p class="lead text-muted">Accédez rapidement à tous vos outils de gestion</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-people text-primary icon-large"></i>
+                        <h4 class="card-title">Utilisateurs</h4>
+                        <p class="card-text">Gérez les comptes utilisateurs, leurs rôles et permissions dans le système.</p>
+                        <a href="{{ path('app_utilisateur_index') }}" class="btn btn-primary">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-box text-success icon-large"></i>
+                        <h4 class="card-title">Consommables</h4>
+                        <p class="card-text">Suivez l'inventaire et gérez les stocks de consommables et fournitures.</p>
+                        <a href="{{ path('app_consommable_index') }}" class="btn btn-success">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-file-text text-info icon-large"></i>
+                        <h4 class="card-title">Contrats</h4>
+                        <p class="card-text">Administrez les contrats, suivez leur statut et gérez les échéances.</p>
+                        <a href="{{ path('app_contrat_index') }}" class="btn btn-info">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-gear text-warning icon-large"></i>
+                        <h4 class="card-title">Équipements</h4>
+                        <p class="card-text">Maintenez l'inventaire des équipements et suivez leur état.</p>
+                        <a href="{{ path('app_equipement_index') }}" class="btn btn-warning">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-tools text-danger icon-large"></i>
+                        <h4 class="card-title">Interventions</h4>
+                        <p class="card-text">Planifiez et suivez les interventions techniques et de maintenance.</p>
+                        <a href="{{ path('app_intervention_index') }}" class="btn btn-danger">Accéder</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-12 mb-4">
+                <h3>Aperçu rapide</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-people text-primary" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Utilisateurs</h5>
+                        <p class="card-text h4 text-primary">--</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-box text-success" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Consommables</h5>
+                        <p class="card-text h4 text-success">--</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-file-text text-info" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Contrats</h5>
+                        <p class="card-text h4 text-info">--</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-gear text-warning" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Équipements</h5>
+                        <p class="card-text h4 text-warning">--</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Admin Panel</h5>
+                <p class="text-muted">Interface d'administration pour la gestion de votre système.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p class="text-muted mb-0">© {{ 'now'|date('Y') }} Tous droits réservés</p>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

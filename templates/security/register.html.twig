@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .auth-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .form-control:focus {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+        }
+        .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+        }
+        .btn-success:hover {
+            background-color: #157347;
+            border-color: #146c43;
+        }
+        .position-relative .btn {
+            border: none !important;
+            background: none !important;
+            padding: 0.375rem 0.75rem;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="auth-card p-4">
+                <div class="text-center mb-4">
+                    <div class="logo-container">
+                        <img src="{{ asset('assets/images/snit.png') }}" alt="Logo" style="height: 200px;">
+                    </div>
+                    <h2 class="fw-bold text-success mb-2">Créer un compte</h2>
+                    <p class="text-muted">Rejoignez le système de gestion du parc informatique</p>
+                </div>
+
+                {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i>{{ form_label(registrationForm.nom) }}
+                            </label>
+                            {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre nom'}}) }}
+                            <div class="text-danger">{{ form_errors(registrationForm.nom) }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i>{{ form_label(registrationForm.pren) }}
+                            </label>
+                            {{ form_widget(registrationForm.pren, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre prénom'}}) }}
+                            <div class="text-danger">{{ form_errors(registrationForm.pren) }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-envelope me-1"></i>{{ form_label(registrationForm.email) }}
+                        </label>
+                        {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre adresse email'}}) }}
+                        <div class="text-danger">{{ form_errors(registrationForm.email) }}</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-phone me-1"></i>{{ form_label(registrationForm.mobile) }}
+                            </label>
+                            {{ form_widget(registrationForm.mobile, {'attr': {'class': 'form-control', 'placeholder': 'Numéro de téléphone'}}) }}
+                            <div class="text-danger">{{ form_errors(registrationForm.mobile) }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-building me-1"></i>{{ form_label(registrationForm.n_bur) }}
+                            </label>
+                            {{ form_widget(registrationForm.n_bur, {'attr': {'class': 'form-control', 'placeholder': 'Numéro de bureau'}}) }}
+                            <div class="text-danger">{{ form_errors(registrationForm.n_bur) }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-diagram-3 me-1"></i>{{ form_label(registrationForm.direction) }}
+                        </label>
+                        {{ form_widget(registrationForm.direction, {'attr': {'class': 'form-control'}}) }}
+                        <div class="text-danger">{{ form_errors(registrationForm.direction) }}</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-lock me-1"></i>{{ form_label(registrationForm.plainPassword.first) }}
+                            </label>
+                            <div class="position-relative">
+                                {{ form_widget(registrationForm.plainPassword.first, {'attr': {'id': 'password1', 'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                                <button type="button" 
+                                        class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted"
+                                        onclick="togglePassword('password1', 'toggleIcon1')"
+                                        style="border: none; background: none; z-index: 10;">
+                                    <i class="bi bi-eye" id="toggleIcon1"></i>
+                                </button>
+                            </div>
+                            <div class="text-danger">{{ form_errors(registrationForm.plainPassword.first) }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-lock-fill me-1"></i>{{ form_label(registrationForm.plainPassword.second) }}
+                            </label>
+                            <div class="position-relative">
+                                {{ form_widget(registrationForm.plainPassword.second, {'attr': {'id': 'password2', 'class': 'form-control', 'placeholder': 'Confirmez le mot de passe'}}) }}
+                                <button type="button" 
+                                        class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted"
+                                        onclick="togglePassword('password2', 'toggleIcon2')"
+                                        style="border: none; background: none; z-index: 10;">
+                                    <i class="bi bi-eye" id="toggleIcon2"></i>
+                                </button>
+                            </div>
+                            <div class="text-danger">{{ form_errors(registrationForm.plainPassword.second) }}</div>
+                        </div>
+                    </div>
+
+                    <div class="text-danger">{{ form_errors(registrationForm.plainPassword) }}</div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-person-check me-2"></i>Créer mon compte
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="mb-0 text-muted">Vous avez déjà un compte ?</p>
+                        <a href="{{ path('app_login') }}" class="text-decoration-none fw-semibold text-success">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Se connecter
+                        </a>
+                    </div>
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function togglePassword(inputId, iconId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleIcon = document.getElementById(iconId);
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('bi-eye');
+        toggleIcon.classList.add('bi-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('bi-eye-slash');
+        toggleIcon.classList.add('bi-eye');
+    }
+}
+
+// Validation en temps réel des mots de passe
+document.addEventListener('DOMContentLoaded', function() {
+    const password1 = document.getElementById('password1');
+    const password2 = document.getElementById('password2');
+    
+    function validatePasswords() {
+        if (password1.value && password2.value) {
+            if (password1.value === password2.value) {
+                password2.classList.remove('is-invalid');
+                password2.classList.add('is-valid');
+            } else {
+                password2.classList.remove('is-valid');
+                password2.classList.add('is-invalid');
+            }
+        }
+    }
+    
+    if (password1 && password2) {
+        password1.addEventListener('input', validatePasswords);
+        password2.addEventListener('input', validatePasswords);
+    }
+});
+</script>
+</body>
+</html>

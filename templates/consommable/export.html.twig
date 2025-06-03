@@ -1,0 +1,322 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exporter les consommables{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/consommable.css') }}?v={{ "now"|date("U") }}">
+    <style>
+        .export-section {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .export-section h4 {
+            margin-bottom: 1rem;
+            color: #495057;
+        }
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .table-sm td, .table-sm th {
+            padding: 0.25rem;
+        }
+        .preview-info {
+            background-color: #e9ecef;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Exporter les consommables en PDF</h1>
+                <a href="{{ path('app_consommable_index') }}" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                </a>
+            </div>
+            
+            <div class="card-body">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+                <form id="exportForm" method="post" action="{{ path('app_consommable_export_pdf') }}">
+                    
+                    <!-- Export Type Selection -->
+                    <div class="export-section">
+                        <h4><i class="fas fa-cog me-2"></i>Type d'exportation</h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="export_type" id="export_all" value="all" checked>
+                                    <label class="form-check-label" for="export_all">
+                                        <strong>Tous les consommables</strong><br>
+                                        <small class="text-muted">Exporter tous les éléments sans filtre</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="export_type" id="export_filtered" value="filtered">
+                                    <label class="form-check-label" for="export_filtered">
+                                        <strong>Avec filtres</strong><br>
+                                        <small class="text-muted">Exporter selon des critères spécifiques</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="export_type" id="export_selected" value="selected">
+                                    <label class="form-check-label" for="export_selected">
+                                        <strong>Sélection manuelle</strong><br>
+                                        <small class="text-muted">Choisir individuellement les éléments</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters Section -->
+                    <div id="filtersSection" class="export-section" style="display: none;">
+                        <h4><i class="fas fa-filter me-2"></i>Filtres</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="designation" class="form-label">Désignation</label>
+                                    <input type="text" class="form-control" id="designation" name="designation" placeholder="Rechercher par désignation...">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="modele" class="form-label">Modèle</label>
+                                    <input type="text" class="form-control" id="modele" name="modele" placeholder="Rechercher par modèle...">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">État</label>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        {% for etat in filterOptions.etats %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="etat[]" value="{{ etat }}" id="etat_{{ etat }}">
+                                            <label class="form-check-label" for="etat_{{ etat }}">{{ etat }}</label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Couleur</label>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        {% for couleur in filterOptions.couleurs %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="couleur[]" value="{{ couleur }}" id="couleur_{{ couleur }}">
+                                            <label class="form-check-label" for="couleur_{{ couleur }}">{{ couleur }}</label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label for="quantite_min" class="form-label">Quantité min</label>
+                                            <input type="number" class="form-control" id="quantite_min" name="quantite_min" min="0">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="valeur_min" class="form-label">Valeur min (Dt)</label>
+                                            <input type="number" class="form-control" id="valeur_min" name="valeur_min" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label for="quantite_max" class="form-label">Quantité max</label>
+                                            <input type="number" class="form-control" id="quantite_max" name="quantite_max" min="0">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="valeur_max" class="form-label">Valeur max (Dt)</label>
+                                            <input type="number" class="form-control" id="valeur_max" name="valeur_max" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="sort_field" class="form-label">Trier par</label>
+                                <select class="form-select" name="sort_field" id="sort_field">
+                                    <option value="id">ID</option>
+                                    <option value="designation">Désignation</option>
+                                    <option value="modele">Modèle</option>
+                                    <option value="couleur">Couleur</option>
+                                    <option value="quantite">Quantité</option>
+                                    <option value="etat">État</option>
+                                    <option value="valeur">Valeur</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sort_direction" class="form-label">Ordre</label>
+                                <select class="form-select" name="sort_direction" id="sort_direction">
+                                    <option value="ASC">Croissant</option>
+                                    <option value="DESC">Décroissant</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manual Selection Section -->
+                    <div id="selectionSection" class="export-section" style="display: none;">
+                        <h4><i class="fas fa-check-square me-2"></i>Sélection manuelle</h4>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-outline-primary me-2" onclick="selectAll()">Tout sélectionner</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="deselectAll()">Tout désélectionner</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="50">
+                                            <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                                        </th>
+                                        <th>ID</th>
+                                        <th>Désignation</th>
+                                        <th>Modèle</th>
+                                        <th>Couleur</th>
+                                        <th>Quantité</th>
+                                        <th>État</th>
+                                        <th>Valeur</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for consommable in consommables %}
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="selected_items[]" value="{{ consommable.id_cons }}" class="item-checkbox">
+                                        </td>
+                                        <td>{{ consommable.id_cons }}</td>
+                                        <td>{{ consommable.designation }}</td>
+                                        <td>{{ consommable.modele }}</td>
+                                        <td>{{ consommable.couleur }}</td>
+                                        <td>{{ consommable.quantite }}</td>
+                                        <td>
+                                            <span class="badge rounded-pill 
+                                                {% if consommable.etat == 'Neuf' %}bg-success
+                                                {% elseif consommable.etat == 'Bon' %}bg-info
+                                                {% elseif consommable.etat == 'Usagé' %}bg-warning
+                                                {% elseif consommable.etat == 'Abîmé' %}bg-danger
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ consommable.etat }}
+                                            </span>
+                                        </td>
+                                        <td>{{ consommable.valeur }} Dt</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div id="previewSection" class="preview-info" style="display: none;">
+                        <div id="previewContent">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <span id="previewText">Aperçu de l'exportation...</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-primary" onclick="previewExport()">
+                            <i class="fas fa-eye me-1"></i> Aperçu
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-file-pdf me-1"></i> Générer PDF
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show/hide sections based on export type
+        document.querySelectorAll('input[name="export_type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const filtersSection = document.getElementById('filtersSection');
+                const selectionSection = document.getElementById('selectionSection');
+                const previewSection = document.getElementById('previewSection');
+                
+                // Hide all sections first
+                filtersSection.style.display = 'none';
+                selectionSection.style.display = 'none';
+                previewSection.style.display = 'none';
+                
+                // Show relevant section
+                if (this.value === 'filtered') {
+                    filtersSection.style.display = 'block';
+                } else if (this.value === 'selected') {
+                    selectionSection.style.display = 'block';
+                }
+            });
+        });
+
+        // Selection functions
+        function selectAll() {
+            document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = true);
+            document.getElementById('selectAllCheckbox').checked = true;
+        }
+
+        function deselectAll() {
+            document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('selectAllCheckbox').checked = false;
+        }
+
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            document.querySelectorAll('.item-checkbox').forEach(cb => {
+                cb.checked = selectAllCheckbox.checked;
+            });
+        }
+
+        // Preview function
+        function previewExport() {
+            const formData = new FormData(document.getElementById('exportForm'));
+            
+            fetch('{{ path("app_consommable_export_preview") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('previewText').textContent = data.message;
+                document.getElementById('previewSection').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Erreur lors de la génération de l\'aperçu');
+            });
+        }
+
+        // Form validation
+        document.getElementById('exportForm').addEventListener('submit', function(e) {
+            const exportType = document.querySelector('input[name="export_type"]:checked').value;
+            
+            if (exportType === 'selected') {
+                const selectedItems = document.querySelectorAll('input[name="selected_items[]"]:checked');
+                if (selectedItems.length === 0) {
+                    e.preventDefault();
+                    alert('Veuillez sélectionner au moins un élément à exporter.');
+                    return false;
+                }
+            }
+        });
+    </script>
+{% endblock %}

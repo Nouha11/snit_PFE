@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Interventions</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+        <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --light-bg: #f8f9fa;
+            --success-color: #28a745;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--secondary-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            color: white;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.85) !important;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            color: white !important;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .card {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            border-top-left-radius: 10px !important;
+            border-top-right-radius: 10px !important;
+            font-weight: bold;
+        }
+        
+        .breadcrumb {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 40px;
+        }
+        
+        .intervention-form {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .priority-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .priority-high { background-color: #dc3545; }
+        .priority-medium { background-color: #ffc107; }
+        .priority-low { background-color: #28a745; }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ path('app_user_interface') }}">
+                <i class="bi bi-pc-display"></i> GestionParc
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ path('app_user_interface') }}">
+                            <i class="bi bi-house"></i> Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="equipementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-laptop"></i> Mes Équipements
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="equipementDropdown">
+                            <li><a class="dropdown-item" href="{{ path('app_equipement_index') }}">Voir tous</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_equipement_index', {'categorie': 'ordinateurs'}) }}">Ordinateurs</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_equipement_index', {'categorie': 'imprimantes'}) }}">Imprimantes</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_equipement_index', {'categorie': 'reseaux'}) }}">Équipements réseau</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="interventionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-tools"></i> Interventions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="interventionDropdown">
+                            <li><a class="dropdown-item" href="{{ path('app_user_myintervention') }}">Mes interventions</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_user_intervention') }}">Nouvelle demande</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                3
+                                <span class="visually-hidden">notifications non lues</span>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown" style="width: 300px;">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <p class="mb-0"><small>Maintenance planifiée sur Imprimante XYZ</small></p>
+                                            <p class="text-muted mb-0"><small>Il y a 2 heures</small></p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <p class="mb-0"><small>Intervention #1234 terminée</small></p>
+                                            <p class="text-muted mb-0"><small>Il y a 1 jour</small></p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="bi bi-info-circle-fill text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <p class="mb-0"><small>Toner faible sur Imprimante Département</small></p>
+                                            <p class="text-muted mb-0"><small>Il y a 3 jours</small></p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="#">Voir toutes les notifications</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> {{ app.user.nom ?? 'Utilisateur' }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ path('app_utilisateur_index') }}">Mon profil</a></li>
+                            <li><a class="dropdown-item" href="#">Paramètres</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+<div class="container-fluid py-4">
+    <!-- En-tête de page -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_user_interface') }}"><i class="bi bi-house"></i> Accueil</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Mes Interventions</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-2">Mes Interventions</h1>
+                    <p class="text-muted">Gérez vos demandes d'intervention et suivez leur progression</p>
+                </div>
+                <div>
+                    <a href="{{ path('app_user_intervention') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle me-2"></i>Nouvelle demande
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques rapides -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stats-card stats-total">
+                <div class="card-body text-center">
+                    <div class="stats-icon">
+                        <i class="bi bi-clipboard-data"></i>
+                    </div>
+                    <h3 class="stats-number">12</h3>
+                    <p class="stats-label">Total</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card stats-pending">
+                <div class="card-body text-center">
+                    <div class="stats-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <h3 class="stats-number">3</h3>
+                    <p class="stats-label">En attente</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card stats-progress">
+                <div class="card-body text-center">
+                    <div class="stats-icon">
+                        <i class="bi bi-gear"></i>
+                    </div>
+                    <h3 class="stats-number">2</h3>
+                    <p class="stats-label">En cours</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card stats-completed">
+                <div class="card-body text-center">
+                    <div class="stats-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <h3 class="stats-number">7</h3>
+                    <p class="stats-label">Terminées</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtres et recherche -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card filter-card">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="search" class="form-label">Recherche</label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   placeholder="Titre, description..." value="{{ app.request.query.get('search') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="status" class="form-label">Statut</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="">Tous</option>
+                                <option value="en_attente" {% if app.request.query.get('status') == 'en_attente' %}selected{% endif %}>En attente</option>
+                                <option value="en_cours" {% if app.request.query.get('status') == 'en_cours' %}selected{% endif %}>En cours</option>
+                                <option value="termine" {% if app.request.query.get('status') == 'termine' %}selected{% endif %}>Terminé</option>
+                                <option value="annule" {% if app.request.query.get('status') == 'annule' %}selected{% endif %}>Annulé</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="priority" class="form-label">Priorité</label>
+                            <select class="form-select" id="priority" name="priority">
+                                <option value="">Toutes</option>
+                                <option value="haute" {% if app.request.query.get('priority') == 'haute' %}selected{% endif %}>Haute</option>
+                                <option value="moyenne" {% if app.request.query.get('priority') == 'moyenne' %}selected{% endif %}>Moyenne</option>
+                                <option value="basse" {% if app.request.query.get('priority') == 'basse' %}selected{% endif %}>Basse</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="date_from" class="form-label">Du</label>
+                            <input type="date" class="form-control" id="date_from" name="date_from" 
+                                   value="{{ app.request.query.get('date_from') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="date_to" class="form-label">Au</label>
+                            <input type="date" class="form-control" id="date_to" name="date_to" 
+                                   value="{{ app.request.query.get('date_to') }}">
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des interventions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card interventions-list-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Liste des interventions</h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-secondary" id="view-grid">
+                            <i class="bi bi-grid-3x3-gap"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary active" id="view-list">
+                            <i class="bi bi-list"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover intervention-table mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Ticket</th>
+                                    <th>Titre</th>
+                                    <th>Équipement</th>
+                                    <th>Priorité</th>
+                                    <th>Statut</th>
+                                    <th>Date création</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="intervention-row" data-priority="haute" data-status="en_cours">
+                                    <td>
+                                        <span class="ticket-number">#INT-2024-001</span>
+                                    </td>
+                                    <td>
+                                        <div class="intervention-title">
+                                            <strong>Problème de connexion réseau</strong>
+                                            <small class="d-block text-muted">PC ne se connecte plus au réseau depuis ce matin</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="equipment-tag">PC-DEV-001</span>
+                                    </td>
+                                    <td>
+                                        <span class="priority-badge priority-haute">
+                                            <i class="bi bi-exclamation-triangle-fill"></i> Haute
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-en_cours">
+                                            <i class="bi bi-gear-fill"></i> En cours
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="date-info">
+                                            <span>{{ 'now'|date('d/m/Y') }}</span>
+                                            <small class="d-block text-muted">{{ 'now'|date('H:i') }}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-outline-primary" title="Voir détails" 
+                                                    data-bs-toggle="modal" data-bs-target="#interventionModal" 
+                                                    data-intervention-id="1">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" title="Ajouter commentaire">
+                                                <i class="bi bi-chat-dots"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="intervention-row" data-priority="moyenne" data-status="en_attente">
+                                    <td>
+                                        <span class="ticket-number">#INT-2024-002</span>
+                                    </td>
+                                    <td>
+                                        <div class="intervention-title">
+                                            <strong>Installation logiciel AutoCAD</strong>
+                                            <small class="d-block text-muted">Besoin d'installer AutoCAD 2024 sur poste de travail</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="equipment-tag">PC-DESIGN-005</span>
+                                    </td>
+                                    <td>
+                                        <span class="priority-badge priority-moyenne">
+                                            <i class="bi bi-dash-circle-fill"></i> Moyenne
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-en_attente">
+                                            <i class="bi bi-hourglass-split"></i> En attente
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="date-info">
+                                            <span>{{ 'now -1 day'|date('d/m/Y') }}</span>
+                                            <small class="d-block text-muted">{{ 'now -1 day'|date('H:i') }}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-outline-primary" title="Voir détails" 
+                                                    data-bs-toggle="modal" data-bs-target="#interventionModal" 
+                                                    data-intervention-id="2">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" title="Ajouter commentaire">
+                                                <i class="bi bi-chat-dots"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="intervention-row" data-priority="basse" data-status="termine">
+                                    <td>
+                                        <span class="ticket-number">#INT-2024-003</span>
+                                    </td>
+                                    <td>
+                                        <div class="intervention-title">
+                                            <strong>Remplacement toner imprimante</strong>
+                                            <small class="d-block text-muted">Toner vide sur imprimante du service RH</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="equipment-tag">IMP-RH-002</span>
+                                    </td>
+                                    <td>
+                                        <span class="priority-badge priority-basse">
+                                            <i class="bi bi-check-circle-fill"></i> Basse
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-termine">
+                                            <i class="bi bi-check-circle-fill"></i> Terminé
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="date-info">
+                                            <span>{{ 'now -3 days'|date('d/m/Y') }}</span>
+                                            <small class="d-block text-muted">{{ 'now -3 days'|date('H:i') }}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-outline-primary" title="Voir détails" 
+                                                    data-bs-toggle="modal" data-bs-target="#interventionModal" 
+                                                    data-intervention-id="3">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning" title="Évaluer">
+                                                <i class="bi bi-star"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Affichage de 1 à 3 sur 12 résultats</small>
+                    <nav aria-label="Pagination interventions">
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled">
+                                <span class="page-link">Précédent</span>
+                            </li>
+                            <li class="page-item active">
+                                <span class="page-link">1</span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">3</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Suivant</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal détails intervention -->
+<div class="modal fade" id="interventionModal" tabindex="-1" aria-labelledby="interventionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="interventionModalLabel">Détails de l'intervention</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="interventionModalBody">
+                <!-- Contenu chargé dynamiquement -->
+                <div class="text-center py-4">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des vues liste/grille
+            const viewGrid = document.getElementById('view-grid');
+            const viewList = document.getElementById('view-list');
+            const table = document.querySelector('.intervention-table');
+            
+            viewGrid.addEventListener('click', function() {
+                viewGrid.classList.add('active');
+                viewList.classList.remove('active');
+                // Logique pour vue grille à implémenter
+            });
+            
+            viewList.addEventListener('click', function() {
+                viewList.classList.add('active');
+                viewGrid.classList.remove('active');
+                // Vue liste (par défaut)
+            });
+            
+            // Gestion du modal détails
+            const interventionModal = document.getElementById('interventionModal');
+            interventionModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const interventionId = button.getAttribute('data-intervention-id');
+                const modalBody = document.getElementById('interventionModalBody');
+                
+                // Simuler le chargement des détails
+                setTimeout(() => {
+                    modalBody.innerHTML = generateInterventionDetails(interventionId);
+                }, 500);
+            });
+            
+            function generateInterventionDetails(id) {
+                const details = {
+                    1: {
+                        title: 'Problème de connexion réseau',
+                        description: 'PC ne se connecte plus au réseau depuis ce matin. Impossible d\'accéder aux ressources partagées.',
+                        equipment: 'PC-DEV-001',
+                        priority: 'Haute',
+                        status: 'En cours',
+                        created: '{{ "now"|date("d/m/Y H:i") }}',
+                        technician: 'Jean Dupont',
+                        comments: [
+                            { author: 'Technicien', date: '{{ "now"|date("d/m/Y H:i") }}', content: 'Intervention planifiée pour demain matin.' },
+                            { author: 'Vous', date: '{{ "now -1 hour"|date("d/m/Y H:i") }}', content: 'Le problème persiste, très urgent.' }
+                        ]
+                    },
+                    2: {
+                        title: 'Installation logiciel AutoCAD',
+                        description: 'Besoin d\'installer AutoCAD 2024 sur poste de travail pour nouveau projet.',
+                        equipment: 'PC-DESIGN-005',
+                        priority: 'Moyenne',
+                        status: 'En attente',
+                        created: '{{ "now -1 day"|date("d/m/Y H:i") }}',
+                        technician: 'Non assigné',
+                        comments: []
+                    },
+                    3: {
+                        title: 'Remplacement toner imprimante',
+                        description: 'Toner vide sur imprimante du service RH, impression impossible.',
+                        equipment: 'IMP-RH-002',
+                        priority: 'Basse',
+                        status: 'Terminé',
+                        created: '{{ "now -3 days"|date("d/m/Y H:i") }}',
+                        technician: 'Marie Martin',
+                        comments: [
+                            { author: 'Technicien', date: '{{ "now -2 days"|date("d/m/Y H:i") }}', content: 'Toner remplacé avec succès.' }
+                        ]
+                    }
+                };
+                
+                const detail = details[id];
+                if (!detail) return '<p>Détails non trouvés.</p>';
+                
+                let html = `
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Titre:</strong><br>
+                            ${detail.title}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Équipement:</strong><br>
+                            <span class="equipment-tag">${detail.equipment}</span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Priorité:</strong><br>
+                            <span class="priority-badge priority-${detail.priority.toLowerCase()}">${detail.priority}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Statut:</strong><br>
+                            <span class="status-badge">${detail.status}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Technicien:</strong><br>
+                            ${detail.technician}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Description:</strong><br>
+                        ${detail.description}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Date de création:</strong><br>
+                        ${detail.created}
+                    </div>
+                `;
+                
+                if (detail.comments.length > 0) {
+                    html += '<div class="mb-3"><strong>Commentaires:</strong><div class="mt-2">';
+                    detail.comments.forEach(comment => {
+                        html += `
+                            <div class="card mb-2">
+                                <div class="card-body py-2">
+                                    <div class="d-flex justify-content-between">
+                                        <small class="fw-bold">${comment.author}</small>
+                                        <small class="text-muted">${comment.date}</small>
+                                    </div>
+                                    <p class="mb-0 mt-1">${comment.content}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div></div>';
+                }
+                
+                return html;
+            }
+            
+            // Animation des cartes stats
+            const statsCards = document.querySelectorAll('.stats-card');
+            statsCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .auth-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .form-control:focus {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+        }
+        .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+        }
+        .btn-success:hover {
+            background-color: #157347;
+            border-color: #146c43;
+        }
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+        .form-control {
+            border-left: none;
+        }
+        .form-control:focus {
+            border-left: none;
+        }
+        .input-group:focus-within .input-group-text {
+            border-color: #198754;
+        }
+        .auth-links {
+            border-top: 1px solid #e9ecef;
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+        .auth-links a {
+            text-decoration: none;
+            color: #198754;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+        .auth-links a:hover {
+            color: #157347;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="auth-card p-4">
+                <div class="text-center mb-4">
+                    <div class="logo-container">
+                        <img src="{{ asset('assets/images/snit.png') }}" alt="Logo" style="height: 200px;">
+                    </div>
+                    <h2 class="fw-bold text-success mb-2">Connexion</h2>
+                    <p class="text-muted">Accédez à votre espace de gestion</p>
+                </div>
+
+                {% if error %}
+                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    </div>
+                {% endif %}
+
+                {# Display flash messages #}
+                {% for type, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} d-flex align-items-center" role="alert">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <div>{{ message }}</div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+                <form method="post" action="{{ path('app_login') }}">
+                    <div class="mb-3">
+                        <label for="inputEmail" class="form-label">
+                            <i class="bi bi-envelope me-1"></i>Adresse Email
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="inputEmail" 
+                                   name="email" 
+                                   value="{{ last_username }}" 
+                                   placeholder="Entrez votre email"
+                                   required 
+                                   autocomplete="email">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="inputPassword" class="form-label">
+                            <i class="bi bi-lock me-1"></i>Mot de passe
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="inputPassword" 
+                                   name="password" 
+                                   placeholder="Entrez votre mot de passe"
+                                   required 
+                                   autocomplete="current-password">
+                            <button class="btn btn-outline-secondary" 
+                                    type="button" 
+                                    onclick="togglePassword()"
+                                    aria-label="Afficher/Masquer le mot de passe">
+                                <i class="bi bi-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
+                        <label class="form-check-label" for="remember_me">
+                            Se souvenir de moi
+                        </label>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <div class="d-grid">
+                        <button class="btn btn-success btn-lg" type="submit">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                        </button>
+                    </div>
+                </form>
+
+                <div class="auth-links text-center">
+                    <div class="mb-2">
+                        <a href="#" class="d-inline-flex align-items-center">
+                            <i class="bi bi-key me-1"></i>
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
+                    <div>
+                        <a href="{{ path('app_register') }}" class="d-inline-flex align-items-center">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Créer un compte
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('inputPassword');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('bi-eye');
+        toggleIcon.classList.add('bi-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('bi-eye-slash');
+        toggleIcon.classList.add('bi-eye');
+    }
+}
+</script>
+</body>
+</html>

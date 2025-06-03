@@ -6,13 +6,14 @@ use App\Entity\Consommable;
 use App\Entity\Equipement;
 use App\Form\ConsommableType;
 use App\Repository\ConsommableRepository;
-use App\Repository\EquipementRepository;
+use App\Service\PdfExportService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+
 
 #[Route('/consommable')]
 class ConsommableController extends AbstractController
@@ -139,6 +140,34 @@ class ConsommableController extends AbstractController
         }
 
         return new JsonResponse(['status' => 'ok']);
+    }
+
+    #[Route('/consommable/export', name: 'app_consommable_export')]
+    public function exportPdf(PdfExportService $pdfExportService): Response
+    {
+        // Get filters from request (if you want to support filtered exports)
+        $filters = [];
+        
+        // You can add filter logic here if needed
+        // For example:
+        // $filters = $request->query->all();
+        
+        try {
+            // Generate PDF using your service
+            $pdfContent = $pdfExportService->exportConsommablesToPdf($filters);
+            
+            // Create response with PDF content
+            $response = new Response($pdfContent);
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', 'attachment; filename="rapport_consommables_' . date('Y-m-d_H-i-s') . '.pdf"');
+            
+            return $response;
+            
+        } catch (\Exception $e) {
+            // Handle errors gracefully
+            $this->addFlash('error', 'Erreur lors de la génération du PDF: ' . $e->getMessage());
+            return $this->redirectToRoute('app_consommable_index');
+        }
     }
 
 }

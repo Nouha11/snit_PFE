@@ -6,9 +6,11 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -37,6 +39,17 @@ class Utilisateur
     #[ORM\JoinColumn(name: 'id_des', referencedColumnName: 'id_des')]
     private ?Direction $direction = null;
 
+    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'utilisateurs')]
+    #[ORM\JoinTable(
+        name: 'utilisateur_role',
+        joinColumns: [
+            new ORM\JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id_u')
+        ],
+        inverseJoinColumns: [
+            new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')
+        ]
+    )]
+    private Collection $roles;
 
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Equipement::class)]
     private Collection $equipements;
@@ -44,6 +57,7 @@ class Utilisateur
     public function __construct()
     {
         $this->equipements = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getIdU(): ?int { return $this->id_u; }
@@ -59,9 +73,6 @@ class Utilisateur
 
     public function getMobile(): ?string { return $this->mobile; }
     public function setMobile(string $mobile): static { $this->mobile = $mobile; return $this; }
-
-    public function getPassword(): ?string { return $this->password; }
-    public function setPassword(string $password): static { $this->password = $password; return $this; }
 
     public function getNbur(): ?int
     {
@@ -104,6 +115,84 @@ class Utilisateur
             }
         }
         return $this;
+    }
+
+    
+    // Role management methods
+    public function getUserRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        $this->roles->removeElement($role);
+        return $this;
+    }
+
+    public function hasRole(string $roleLibelle): bool
+    {
+        foreach ($this->roles as $role) {
+            if ($role->getLibelle() === $roleLibelle) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // PasswordAuthenticatedUserInterface method
+    public function getPassword(): string
+    {
+        return $this->password ?? '';
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    // UserInterface methods
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = [];
+        
+        // Convert Role entities to string array
+        foreach ($this->roles as $role) {
+            $roles[] = 'ROLE_' . strtoupper($role->getLibelle());
+        }
+        
+        // Guarantee every user at least has ROLE_USER
+        if (empty($roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return array_unique($roles);
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    // For backward compatibility if needed
+    public function getUsername(): string
+    {
+        return $this->getUserIdentifier();
     }
 
 }

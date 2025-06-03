@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport des Consommables</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #007bff;
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .export-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .export-info h3 {
+            margin: 0 0 10px 0;
+            color: #007bff;
+            font-size: 16px;
+        }
+        
+        .info-grid {
+            display: table;
+            width: 100%;
+        }
+        
+        .info-row {
+            display: table-row;
+        }
+        
+        .info-cell {
+            display: table-cell;
+            padding: 5px 15px 5px 0;
+            vertical-align: top;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #555;
+            width: 150px;
+        }
+        
+        .filters-applied {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        
+        .filters-applied h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #495057;
+        }
+        
+        .filter-item {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            margin: 2px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .data-table th,
+        .data-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+            font-size: 11px;
+        }
+        
+        .data-table td {
+            font-size: 10px;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 9px;
+            font-weight: bold;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            min-width: 40px;
+        }
+        
+        .badge-success { background-color: #198754; }
+        .badge-info { background-color: #0dcaf0; color: #000; }
+        .badge-warning { background-color: #ffc107; color: #000; }
+        .badge-danger { background-color: #dc3545; }
+        .badge-dark { background-color: #212529; }
+        .badge-secondary { background-color: #6c757d; }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .summary {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .summary-grid {
+            display: table;
+            width: 100%;
+        }
+        
+        .summary-row {
+            display: table-row;
+        }
+        
+        .summary-cell {
+            display: table-cell;
+            padding: 5px 15px 5px 0;
+            vertical-align: top;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        @page {
+            margin: 1cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Rapport des Consommables</h1>
+        <div class="subtitle">Généré le {{ exportDate|date('d/m/Y à H:i') }}</div>
+    </div>
+
+    <div class="export-info">
+        <h3>Informations sur l'exportation</h3>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-cell info-label">Date d'exportation :</div>
+                <div class="info-cell">{{ exportDate|date('d/m/Y à H:i:s') }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-cell info-label">Nombre d'éléments :</div>
+                <div class="info-cell">{{ totalItems }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-cell info-label">Type d'export :</div>
+                <div class="info-cell">
+                    {% if filters.ids is defined and filters.ids is not empty %}
+                        Sélection manuelle ({{ filters.ids|length }} éléments sélectionnés)
+                    {% elseif filters|length > 0 %}
+                        Export avec filtres
+                    {% else %}
+                        Export complet
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if filters|length > 0 and filters.ids is not defined %}
+        <div class="filters-applied">
+            <h4>Filtres appliqués :</h4>
+            {% if filters.etat is defined and filters.etat is not empty %}
+                <strong>États :</strong> 
+                {% for etat in filters.etat %}
+                    <span class="filter-item">{{ etat }}</span>
+                {% endfor %}
+            {% endif %}
+            {% if filters.couleur is defined and filters.couleur is not empty %}
+                <strong>Couleurs :</strong>
+                {% for couleur in filters.couleur %}
+                    <span class="filter-item">{{ couleur }}</span>
+                {% endfor %}
+            {% endif %}
+            {% if filters.designation is defined and filters.designation is not empty %}
+                <strong>Désignation :</strong> <span class="filter-item">{{ filters.designation }}</span>
+            {% endif %}
+            {% if filters.modele is defined and filters.modele is not empty %}
+                <strong>Modèle :</strong> <span class="filter-item">{{ filters.modele }}</span>
+            {% endif %}
+            {% if filters.quantite_min is defined and filters.quantite_min is not empty %}
+                <strong>Quantité min :</strong> <span class="filter-item">{{ filters.quantite_min }}</span>
+            {% endif %}
+            {% if filters.quantite_max is defined and filters.quantite_max is not empty %}
+                <strong>Quantité max :</strong> <span class="filter-item">{{ filters.quantite_max }}</span>
+            {% endif %}
+            {% if filters.valeur_min is defined and filters.valeur_min is not empty %}
+                <strong>Valeur min :</strong> <span class="filter-item">{{ filters.valeur_min }} Dt</span>
+            {% endif %}
+            {% if filters.valeur_max is defined and filters.valeur_max is not empty %}
+                <strong>Valeur max :</strong> <span class="filter-item">{{ filters.valeur_max }} Dt</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    {% if consommables|length > 0 %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Désignation</th>
+                <th>Modèle</th>
+                <th>Couleur</th>
+                <th class="text-center">Quantité</th>
+                <th class="text-center">État</th>
+                <th class="text-right">Valeur (Dt)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set totalValue = 0 %}
+            {% for consommable in consommables %}
+            <tr>
+                <td>{{ consommable.id }}</td>
+                <td>{{ consommable.designation }}</td>
+                <td>{{ consommable.modele ?: '-' }}</td>
+                <td>{{ consommable.couleur ?: '-' }}</td>
+                <td class="text-center">{{ consommable.quantite }}</td>
+                <td class="text-center">
+                    <span class="badge 
+                        {% if consommable.etat == 'Neuf' %}badge-success
+                        {% elseif consommable.etat == 'Bon' %}badge-info
+                        {% elseif consommable.etat == 'Usagé' %}badge-warning
+                        {% elseif consommable.etat == 'Abîmé' %}badge-danger
+                        {% elseif consommable.etat == 'Défectueux' %}badge-dark
+                        {% else %}badge-secondary{% endif %}">
+                        {{ consommable.etat }}
+                    </span>
+                </td>
+                <td class="text-right">{{ consommable.valeur|number_format(2, ',', ' ') }}</td>
+            </tr>
+            {% set totalValue = totalValue + (consommable.valeur * consommable.quantite) %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="summary">
+        <h3>Résumé</h3>
+        <div class="summary-grid">
+            <div class="summary-row">
+                <div class="summary-cell info-label">Nombre total d'articles :</div>
+                <div class="summary-cell"><strong>{{ consommables|length }}</strong></div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-cell info-label">Quantité totale :</div>
+                <div class="summary-cell"><strong>{{ consommables|reduce((carry, item) => carry + item.quantite, 0) }}</strong></div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-cell info-label">Valeur totale estimée :</div>
+                <div class="summary-cell"><strong>{{ totalValue|number_format(2, ',', ' ') }} Dt</strong></div>
+            </div>
+        </div>
+        
+        {% set etatsCount = {} %}
+        {% for consommable in consommables %}
+            {% set etatsCount = etatsCount|merge({(consommable.etat): (etatsCount[consommable.etat] ?? 0) + 1}) %}
+        {% endfor %}
+        
+        {% if etatsCount|length > 0 %}
+        <div style="margin-top: 15px;">
+            <h4>Répartition par état :</h4>
+            {% for etat, count in etatsCount %}
+                <span class="badge 
+                    {% if etat == 'Neuf' %}badge-success
+                    {% elseif etat == 'Bon' %}badge-info
+                    {% elseif etat == 'Usagé' %}badge-warning
+                    {% elseif etat == 'Abîmé' %}badge-danger
+                    {% elseif etat == 'Défectueux' %}badge-dark
+                    {% else %}badge-secondary{% endif %}" style="margin-right: 10px;">
+                    {{ etat }} : {{ count }}
+                </span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="text-center" style="margin-top: 50px; padding: 30px;">
+        <h3>Aucun consommable trouvé</h3>
+        <p>Aucun élément ne correspond aux critères d'exportation sélectionnés.</p>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        Rapport généré automatiquement le {{ exportDate|date('d/m/Y à H:i:s') }} - 
+        {% if filters.ids is defined and filters.ids is not empty %}
+            Export de {{ filters.ids|length }} éléments sélectionnés
+        {% elseif filters|length > 0 %}
+            Export avec filtres appliqués
+        {% else %}
+            Export complet de tous les consommables
+        {% endif %}
+    </div>
+</body>
+</html>

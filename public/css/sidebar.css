@@ -1,0 +1,202 @@
+/* Custom CSS for the IT Management Application */
+
+/* Sidebar styles */
+.wrapper {
+    height: 100vh;
+    width: 100%;
+}
+
+.sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    transition: all 0.3s;
+    overflow-y: auto;
+}
+
+.sidebar.collapsed {
+    margin-left: -250px;
+}
+
+.sidebar .sidebar-header {
+    padding: 1.2rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar ul.components {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar ul li a {
+    padding: 0.8rem 1.5rem;
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li.active > a {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar ul ul a {
+    padding-left: 3rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.sidebar .menu-text {
+    transition: opacity 0.3s;
+    opacity: 1;
+}
+
+.sidebar.collapsed .menu-text {
+    opacity: 0;
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-footer a {
+    padding: 0.8rem 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar-footer a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Content styles */
+.content {
+    width: calc(100% - 250px);
+    min-height: 100vh;
+    transition: all 0.3s;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+.content.expanded {
+    width: 100%;
+}
+
+/* Card customizations */
+.card {
+    transition: transform 0.2s;
+    border-radius: 0.5rem;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* Badge customizations */
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.7em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        margin-left: -250px;
+    }
+    
+    .sidebar.collapsed {
+        margin-left: 0;
+    }
+    
+    .content {
+        width: 100%;
+    }
+    
+    .content.expanded {
+        width: calc(100% - 250px);
+    }
+}
+
+/* Utility classes */
+.bg-opacity-10 {
+    --bs-bg-opacity: 0.1;
+}
+
+/* Stats card hover effects */
+.card .bg-primary.bg-opacity-10,
+.card .bg-warning.bg-opacity-10,
+.card .bg-info.bg-opacity-10,
+.card .bg-danger.bg-opacity-10,
+.card .bg-success.bg-opacity-10 {
+    transition: all 0.3s;
+}
+
+.card:hover .bg-primary.bg-opacity-10 {
+    background-color: rgba(var(--bs-primary-rgb), 0.2) !important;
+}
+
+.card:hover .bg-warning.bg-opacity-10 {
+    background-color: rgba(var(--bs-warning-rgb), 0.2) !important;
+}
+
+.card:hover .bg-info.bg-opacity-10 {
+    background-color: rgba(var(--bs-info-rgb), 0.2) !important;
+}
+
+.card:hover .bg-danger.bg-opacity-10 {
+    background-color: rgba(var(--bs-danger-rgb), 0.2) !important;
+}
+
+.card:hover .bg-success.bg-opacity-10 {
+    background-color: rgba(var(--bs-success-rgb), 0.2) !important;
+}
+
+/* Activity icons */
+.list-group-item .rounded {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Quick access buttons hover effect */
+.btn-light:hover {
+    background-color: #f0f0f0;
+    border-color: #ddd;
+}
+
+/* Table customizations */
+.table th {
+    font-weight: 600;
+    border-top: 0;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}

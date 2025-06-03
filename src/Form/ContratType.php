@@ -24,7 +24,7 @@ class ContratType extends AbstractType
             'multiple' => true,
             'expanded' => true, 
             'by_reference' => false,
-            'label' => 'Équipements liés',
+            'label' => 'Équipements',
             'required' => false,
         ]);
     }

@@ -89,11 +89,28 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    {{ form_label(form.equipements) }}
-                    {{ form_widget(form.equipements) }}
-                    {{ form_errors(form.equipements) }}
-                </div>
+                            <div class="col-md-6 mb-3">
+                                <h6>Gérer les équipements</h6>
+                            
+                                <!-- Select/Deselect All Buttons -->
+                                <div class="mb-2 d-flex justify-content-between">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="select-all">Tout sélectionner</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect-all">Tout désélectionner</button>
+                                </div>
+                            
+                                <!-- Scrollable Box -->
+                                <div class="form-check-list border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                    {% for equipement in form.equipements %}
+                                        <div class="form-check mb-2">
+                                            {{ form_widget(equipement, { 'attr': {'class': 'form-check-input'} }) }}
+                                            {{ form_label(equipement, null, { 'label_attr': {'class': 'form-check-label'} }) }}
+                                        </div>
+                                    {% endfor %}
+                                    {{ form_errors(form.equipements) }}
+                                </div>
+                            
+                                <small class="text-muted">Cochez pour assigner un équipement, décochez pour retirer</small>
+                            </div>
 
                 <div class="col-md-6 mb-3">
                     {{ form_label(form.n_bur) }}

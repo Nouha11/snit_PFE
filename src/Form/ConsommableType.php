@@ -54,14 +54,14 @@ class ConsommableType extends AbstractType
                 'choice_label' => function ($equipement) {
                     return $equipement->getNserie() . ' - ' . $equipement->getModele() ;  
                 },
-                'label' => 'Équipements disponibles',
+                'label' => 'Équipements',
                 'multiple' => true,  
                 'expanded' => true,
                 'required' => false,
                 'placeholder' => 'Aucun équipement disponible',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')
-                        ->where('e.consommable IS NULL');
+                        ->where('e.consommable IS NULL OR e.consommable = 999');
                 },
                 'attr' => ['class' => 'form-control'],
             ]);

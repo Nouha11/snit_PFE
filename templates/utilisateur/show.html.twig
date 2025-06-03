@@ -24,7 +24,7 @@
                     </tr>                    
                     <tr>
                         <th>Num Bureau</th>
-                        <td>{{ utilisateur.nBur  }}</td>
+                        <td>{{ utilisateur.nbur }}</td>
                     </tr>
                     <tr>
                         <th>Nom</th>
@@ -74,19 +74,19 @@
             <span class="text-muted">Aucun équipement associé</span>
             {% endif %}
         </div>
-        <div class="card-footer">
+        <div class="card-footer d-flex gap-2">
             <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary">Retour à la liste</a>
-        
+
             {% if utilisateur.idU %}
                 <a href="{{ path('app_utilisateur_edit', {'id_u': utilisateur.idU}) }}" class="btn btn-warning">Modifier</a>
-                <form method="post" action="{{ path('app_utilisateur_delete', {'id_u': utilisateur.idU}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                <form method="post" action="{{ path('app_utilisateur_delete', {'id_u': utilisateur.idU}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.idU) }}">
-                    <button class="btn btn-danger btn-sm">Supprimer</button>
+                    <button class="btn btn-danger">Supprimer</button>
                 </form>                             
             {% else %}
                 <span class="text-muted">Actions non disponibles</span>
             {% endif %}
-        </div>        
+        </div>       
     </div>
 </div>
 {% endblock %}

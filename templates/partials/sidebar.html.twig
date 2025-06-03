@@ -1,0 +1,428 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}?v={{ "now"|date("U") }}">
+    <style>
+        /* Additional styles for toggle functionality */
+        .sidebar-toggle-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: #343a40;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-100%);
+        }
+        
+        .sidebar-toggle-btn:hover {
+            background: #495057;
+            color: white;
+        }
+        
+        .sidebar-toggle-btn.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+        
+        /* Ensure sidebar transitions smoothly */
+        #sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        /* Add backdrop for mobile */
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Dropdown toggle styles */
+        .dropdown-toggle {
+            position: relative;
+        }
+        
+        .dropdown-toggle::after {
+            content: '';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown-toggle[aria-expanded="true"]::after {
+            transform: translateY(-50%) rotate(-135deg);
+        }
+        
+        .dropdown-toggle[aria-expanded="false"]::after {
+            transform: translateY(-50%) rotate(45deg);
+        }
+        
+        /* Submenu styles */
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .submenu.show {
+            max-height: 200px;
+        }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 767.98px) {
+            .sidebar-toggle-btn {
+                opacity: 1;
+                visibility: visible;
+                transform: translateX(0);
+            }
+            
+            #sidebar {
+                transform: translateX(-100%);
+            }
+            
+            #sidebar.show {
+                transform: translateX(0);
+            }
+        }
+    </style>
+{% endblock %}
+
+<!-- Sidebar Toggle Button (appears when sidebar is collapsed) -->
+<button id="sidebarToggleBtn" class="sidebar-toggle-btn">
+    <i class="bi bi-list"></i>
+</button>
+
+<!-- Backdrop for mobile -->
+<div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+<!-- Sidebar -->
+<nav id="sidebar" class="sidebar bg-dark">
+    <div class="sidebar-header d-flex justify-content-between align-items-center">
+        <div class="logo d-flex align-items-center">
+            <i class="bi bi-pc-display me-2 text-light"></i>
+            <h3 class="m-0 text-light">GestionParc</h3>
+        </div>
+        <button id="sidebarCollapseBtn" class="btn btn-link p-0 text-light">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </div>
+
+    <ul class="list-unstyled components">
+        <li class="active">
+            <a href="{{ path('admin_dashboard') }}" class="d-flex align-items-center">
+                <i class="bi bi-house-door me-2"></i>
+                <span class="menu-text">Accueil</span>
+            </a>
+        </li>
+        <li>
+            <a href="#userSubmenu" class="dropdown-toggle d-flex align-items-center" aria-expanded="false">
+                <i class="bi bi-person me-2"></i>
+                <span class="menu-text">Users</span>
+            </a>
+            <ul class="list-unstyled submenu" id="userSubmenu">
+                <li>
+                    <a href="{{ path('app_utilisateur_index') }}" class="d-flex align-items-center">
+                        <i class="bi bi-list-ul me-2"></i>
+                        <span class="menu-text">Liste des utilisateurs</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_utilisateur_new') }}" class="d-flex align-items-center">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <span class="menu-text">Ajouter un utilisateur</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#inventaireSubmenu" class="dropdown-toggle d-flex align-items-center" aria-expanded="false">
+                <i class="bi bi-laptop me-2"></i>
+                <span class="menu-text">Equipements</span>
+            </a>
+            <ul class="list-unstyled submenu" id="inventaireSubmenu">
+                <li>
+                    <a href="{{ path('app_equipement_index') }}" class="d-flex align-items-center">
+                        <i class="bi bi-list-ul me-2"></i>
+                        <span class="menu-text">Liste des équipements</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_equipement_new') }}" class="d-flex align-items-center">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <span class="menu-text">Ajouter un équipement</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#consommablesSubmenu" class="dropdown-toggle d-flex align-items-center" aria-expanded="false">
+                <i class="bi bi-printer me-2"></i>
+                <span class="menu-text">Consommables</span>
+            </a>
+            <ul class="list-unstyled submenu" id="consommablesSubmenu">
+                <li>
+                    <a href="{{ path('app_consommable_index') }}" class="d-flex align-items-center">
+                        <i class="bi bi-list-ul me-2"></i>
+                        <span class="menu-text">Liste des consommables</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_consommable_new') }}" class="d-flex align-items-center">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <span class="menu-text">Ajouter un consommable</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#interventionsSubmenu" class="dropdown-toggle d-flex align-items-center" aria-expanded="false">
+                <i class="bi bi-tools me-2"></i>
+                <span class="menu-text">Interventions</span>
+            </a>
+            <ul class="list-unstyled submenu" id="interventionsSubmenu">
+                <li>
+                    <a href="{{ path('app_intervention_index') }}" class="d-flex align-items-center">
+                        <i class="bi bi-list-ul me-2"></i>
+                        <span class="menu-text">Liste des demandes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_intervention_new') }}" class="d-flex align-items-center">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <span class="menu-text">Nouvelle demande</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="{{ path('app_contrat_index') }}" class="d-flex align-items-center">
+                <i class="bi bi-bell me-2"></i>
+                <span class="menu-text">Contrats</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="d-flex align-items-center">
+                <i class="bi bi-graph-up me-2"></i>
+                <span class="menu-text">Statistiques</span>
+            </a>
+        </li>
+        <li>
+            <a href="#rapportsSubmenu" class="dropdown-toggle d-flex align-items-center" aria-expanded="false">
+                <i class="bi bi-file-earmark-text me-2"></i>
+                <span class="menu-text">Rapports</span>
+            </a>
+            <ul class="list-unstyled submenu" id="rapportsSubmenu">
+                <li>
+                    <a href="#" class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>
+                        <span class="menu-text">Générer PDF</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark-excel me-2"></i>
+                        <span class="menu-text">Exporter Excel</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="logo-container">
+        <img src="{{ asset('assets/images/snit.png') }}" alt="Logo" style="height: 120px; margin-left: 20px;">
+    </div>
+
+    <div class="sidebar-footer">
+        <a href="#" class="d-flex align-items-center">
+            <i class="bi bi-gear me-2"></i>
+            <span class="menu-text">Paramètres</span>
+        </a>
+        <a href="{{ path('app_logout') }}" class="d-flex align-items-center">
+            <i class="bi bi-box-arrow-right me-2"></i>
+            <span class="menu-text">Déconnexion</span>
+        </a>
+    </div>
+</nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const collapseIcon = sidebarCollapseBtn.querySelector('i');
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    // Function to close all dropdowns
+    function closeAllDropdowns() {
+        dropdownToggles.forEach(toggle => {
+            const targetId = toggle.getAttribute('href').substring(1);
+            const submenu = document.getElementById(targetId);
+            if (submenu) {
+                submenu.classList.remove('show');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+    
+    // Function to collapse sidebar
+    function collapseSidebar() {
+        sidebar.classList.add('collapsed');
+        collapseIcon.className = 'bi bi-chevron-right';
+        sidebarToggleBtn.classList.add('show');
+        closeAllDropdowns(); // Close all dropdowns when collapsing
+        
+        // Store collapsed state
+        localStorage.setItem('sidebarCollapsed', 'true');
+    }
+    
+    // Function to expand sidebar
+    function expandSidebar() {
+        sidebar.classList.remove('collapsed');
+        collapseIcon.className = 'bi bi-chevron-left';
+        sidebarToggleBtn.classList.remove('show');
+        sidebar.classList.remove('show'); // Remove mobile show class
+        sidebarBackdrop.classList.remove('show');
+        
+        // Store expanded state
+        localStorage.setItem('sidebarCollapsed', 'false');
+    }
+    
+    // Function to toggle sidebar (for mobile)
+    function toggleSidebarMobile() {
+        if (window.innerWidth <= 767.98) {
+            sidebar.classList.toggle('show');
+            sidebarBackdrop.classList.toggle('show');
+        } else {
+            if (sidebar.classList.contains('collapsed')) {
+                expandSidebar();
+            } else {
+                collapseSidebar();
+            }
+        }
+    }
+    
+    // Dropdown toggle functionality
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href').substring(1);
+            const submenu = document.getElementById(targetId);
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            
+            // Close all other dropdowns first
+            dropdownToggles.forEach(otherToggle => {
+                if (otherToggle !== this) {
+                    const otherTargetId = otherToggle.getAttribute('href').substring(1);
+                    const otherSubmenu = document.getElementById(otherTargetId);
+                    if (otherSubmenu) {
+                        otherSubmenu.classList.remove('show');
+                        otherToggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+            
+            // Toggle current dropdown
+            if (submenu) {
+                if (isExpanded) {
+                    submenu.classList.remove('show');
+                    this.setAttribute('aria-expanded', 'false');
+                } else {
+                    submenu.classList.add('show');
+                    this.setAttribute('aria-expanded', 'true');
+                }
+            }
+        });
+    });
+    
+    // Collapse button click handler
+    sidebarCollapseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (window.innerWidth > 767.98) {
+            collapseSidebar();
+        } else {
+            sidebar.classList.remove('show');
+            sidebarBackdrop.classList.remove('show');
+        }
+    });
+    
+    // Toggle button click handler
+    sidebarToggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        toggleSidebarMobile();
+    });
+    
+    // Backdrop click handler (mobile)
+    sidebarBackdrop.addEventListener('click', function() {
+        sidebar.classList.remove('show');
+        sidebarBackdrop.classList.remove('show');
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 767.98) {
+            // Desktop view
+            sidebar.classList.remove('show');
+            sidebarBackdrop.classList.remove('show');
+            
+            // Restore collapsed state from localStorage
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+                collapseIcon.className = 'bi bi-chevron-right';
+                sidebarToggleBtn.classList.add('show');
+            } else {
+                sidebar.classList.remove('collapsed');
+                collapseIcon.className = 'bi bi-chevron-left';
+                sidebarToggleBtn.classList.remove('show');
+            }
+        } else {
+            // Mobile view
+            sidebar.classList.remove('collapsed');
+            sidebarToggleBtn.classList.add('show');
+        }
+    });
+    
+    // Initialize sidebar state on page load
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (isCollapsed && window.innerWidth > 767.98) {
+        collapseSidebar();
+    }
+    
+    // Show toggle button on mobile
+    if (window.innerWidth <= 767.98) {
+        sidebarToggleBtn.classList.add('show');
+    }
+    
+    // Close dropdowns when clicking outside sidebar
+    document.addEventListener('click', function(e) {
+        if (!sidebar.contains(e.target)) {
+            closeAllDropdowns();
+        }
+    });
+});
+</script>

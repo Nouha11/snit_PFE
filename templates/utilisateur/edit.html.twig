@@ -5,7 +5,7 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/utilisateur.css') }}?v={{ "now"|date("U") }}">
-    {% endblock %}
+{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -42,134 +42,193 @@
 {% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h2 class="text-center">Modification de l'utilisateur</h2>
-
-    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    {{ form_label(form.n_bur) }}
-                    {{ form_widget(form.n_bur) }}
-                    {{ form_errors(form.n_bur) }}
-                </div>
-                <div class="col-md-6 mb-3">
-                    {{ form_label(form.direction) }}
-                    {{ form_widget(form.direction) }}
-                    {{ form_errors(form.direction) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    {{ form_label(form.nom) }}
-                    {{ form_widget(form.nom) }}
-                    {{ form_errors(form.nom) }}
-                </div>
-                <div class="col-md-6 mb-3">
-                    {{ form_label(form.pren) }}
-                    {{ form_widget(form.pren) }}
-                    {{ form_errors(form.pren) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    {{ form_label(form.email) }}
-                    {{ form_widget(form.email) }}
-                    {{ form_errors(form.email) }}
-                </div>
-                <div class="col-md-6 mb-3">
-                    {{ form_label(form.mobile) }}
-                    {{ form_widget(form.mobile) }}
-                    {{ form_errors(form.mobile) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    {{ form_label(form.password) }}
-                    {{ form_widget(form.password) }}
-                    {{ form_errors(form.password) }}
-                    <small class="form-text text-muted">Laissez vide pour conserver le mot de passe actuel!</small>
-                </div>
-            </div>
-
-            <div class="row">
-                <h5 class="bg-light border-start border-4 border-primary px-3 py-2 rounded fw-semibold">
-                    Équipements
-                </h5>
-                <div class="col-md-6 mb-3">
-                    <h6>Équipements actuels</h6>
-                    {% if utilisateur.equipements is not empty %}
-                    <ul class="list-group">
-                        {% for equipement in utilisateur.equipements %}
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div><strong>ID:</strong> {{ equipement.id_eq }}</div>
-                                    <div><strong>N° Série:</strong> {{ equipement.Nserie }}</div>
-                                    <div><strong>Modèle:</strong> {{ equipement.modele }}</div>
-                                </div>
-                                <button type="button" class="btn btn-danger btn-sm remove-equipment" 
-                                        data-equipment-id="{{ equipement.id_eq }}"
-                                        title="Retirer cet équipement">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <span class="text-muted">Aucun équipement associé</span>
-                    {% endif %}
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <h6>Gérer les équipements</h6>
-                
-                    <!-- Select/Deselect All Buttons -->
-                    <div class="mb-2 d-flex justify-content-between">
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="select-all">Tout sélectionner</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect-all">Tout désélectionner</button>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h1 class="m-0 font-weight-bold text-primary">Modifier l'utilisateur</h1>
+                        <div>
+                            <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Retour à la liste
+                            </a>
+                            <a href="{{ path('app_utilisateur_show', {'id_u': utilisateur.idU}) }}" class="btn btn-info">
+                                <i class="fas fa-eye"></i> Voir les détails
+                            </a>
+                        </div>
                     </div>
-                
-                    <!-- Scrollable Box -->
-                    <div class="form-check-list border rounded p-2" style="max-height: 300px; overflow-y: auto;">
-                        {% for equipement in form.equipements %}
-                            <div class="form-check mb-2">
-                                {{ form_widget(equipement, { 'attr': {'class': 'form-check-input'} }) }}
-                                {{ form_label(equipement, null, { 'label_attr': {'class': 'form-check-label'} }) }}
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.n_bur) }}
+                                {{ form_widget(form.n_bur) }}
+                                {{ form_errors(form.n_bur) }}
                             </div>
-                        {% endfor %}
-                        {{ form_errors(form.equipements) }}
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.direction) }}
+                                {{ form_widget(form.direction) }}
+                                {{ form_errors(form.direction) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.nom) }}
+                                {{ form_widget(form.nom) }}
+                                {{ form_errors(form.nom) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.pren) }}
+                                {{ form_widget(form.pren) }}
+                                {{ form_errors(form.pren) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.email) }}
+                                {{ form_widget(form.email) }}
+                                {{ form_errors(form.email) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.mobile) }}
+                                {{ form_widget(form.mobile) }}
+                                {{ form_errors(form.mobile) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.password) }}
+                                {{ form_widget(form.password) }}
+                                {{ form_errors(form.password) }}
+                                <small class="form-text text-muted">Laissez vide pour conserver le mot de passe actuel!</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="bg-light border-start border-4 border-primary px-3 py-2 rounded fw-semibold">
+                                    Équipements
+                                </h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <h6>Équipements actuels</h6>
+                                {% if utilisateur.equipements is not empty %}
+                                <ul class="list-group">
+                                    {% for equipement in utilisateur.equipements %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                                            <div class="ms-2 me-auto">
+                                                <div><strong>ID:</strong> {{ equipement.id_eq }}</div>
+                                                <div><strong>N° Série:</strong> {{ equipement.Nserie }}</div>
+                                                <div><strong>Modèle:</strong> {{ equipement.modele }}</div>
+                                            </div>
+                                            <button type="button" class="btn btn-danger btn-sm remove-equipment" 
+                                                    data-equipment-id="{{ equipement.id_eq }}"
+                                                    title="Retirer cet équipement">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <span class="text-muted">Aucun équipement associé</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <h6>Gérer les équipements</h6>
+                            
+                                <!-- Select/Deselect All Buttons -->
+                                <div class="mb-2 d-flex justify-content-between">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="select-all">Tout sélectionner</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect-all">Tout désélectionner</button>
+                                </div>
+                            
+                                <!-- Scrollable Box -->
+                                <div class="form-check-list border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                    {% for equipement in form.equipements %}
+                                        <div class="form-check mb-2">
+                                            {{ form_widget(equipement, { 'attr': {'class': 'form-check-input'} }) }}
+                                            {{ form_label(equipement, null, { 'label_attr': {'class': 'form-check-label'} }) }}
+                                        </div>
+                                    {% endfor %}
+                                    {{ form_errors(form.equipements) }}
+                                </div>
+                            
+                                <small class="text-muted">Cochez pour assigner un équipement, décochez pour retirer</small>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Mettre à jour
+                            </button>
+                            <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                        </div>
+
+                        {{ form_end(form) }}
+
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash"></i> Supprimer cet utilisateur
+                            </button>
+                        </div>
+                        
+                        <!-- Delete Modal -->
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Êtes-vous sûr de vouloir supprimer cet utilisateur : 
+                                        <br><br>
+                                        <strong>ID:</strong> {{ utilisateur.idU }} 
+                                        <br>
+                                        <strong>Nom:</strong> {{ utilisateur.nom }} {{ utilisateur.pren }}
+                                        <br>
+                                        <strong>Email:</strong> {{ utilisateur.email }}
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        <form method="post" action="{{ path('app_utilisateur_delete', {'id_u': utilisateur.idU}) }}" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.idU) }}">
+                                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                
-                    <small class="text-muted">Cochez pour assigner un équipement, décochez pour retirer</small>
                 </div>
             </div>
-        </div>
-        <div class="card-footer">
-            <button type="submit" class="btn btn-success">Sauvegarder</button>
-            <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary">Annuler</a>
         </div>
     </div>
-    {{ form_end(form) }}
-</div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const selectAllBtn = document.getElementById('select-all');
-        const deselectAllBtn = document.getElementById('deselect-all');
-        const checkboxes = document.querySelectorAll('.form-check-input');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAllBtn = document.getElementById('select-all');
+            const deselectAllBtn = document.getElementById('deselect-all');
+            const checkboxes = document.querySelectorAll('.form-check-input');
 
-        selectAllBtn.addEventListener('click', function () {
-            checkboxes.forEach(cb => cb.checked = true);
+            selectAllBtn.addEventListener('click', function () {
+                checkboxes.forEach(cb => cb.checked = true);
+            });
+
+            deselectAllBtn.addEventListener('click', function () {
+                checkboxes.forEach(cb => cb.checked = false);
+            });
         });
-
-        deselectAllBtn.addEventListener('click', function () {
-            checkboxes.forEach(cb => cb.checked = false);
-        });
-    });
-</script>
+    </script>
 {% endblock %}
-
