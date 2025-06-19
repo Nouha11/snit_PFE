@@ -1,0 +1,402 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques - Administration{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-chart-line me-2"></i>Tableau de Bord - Statistiques
+            </h1>
+            <p class="text-muted">Vue d'ensemble du système de maintenance IT</p>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Équipements
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalEquipments }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-laptop fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Consommables
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalConsommables }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total Interventions
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalInterventions }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tools fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Valeur Consommables
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalConsommableValue|number_format(0, ',', ' ') }} Dt</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-euro-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Equipment State Chart -->
+        <div class="col-xl-6 col-lg-7 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">État des Équipements</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="equipmentStateChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Intervention Types Chart -->
+        <div class="col-xl-6 col-lg-5 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Types d'Interventions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="interventionTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Interventions Chart -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Évolution des Interventions (12 derniers mois)</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Tables Row -->
+    <div class="row mb-4">
+        <!-- Top Equipment Models -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 10 Modèles d'Équipements</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Modèle</th>
+                                    <th class="text-end">Quantité</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in equipmentsByModel %}
+                                <tr>
+                                    <td>{{ item.modele ?? 'Non spécifié' }}</td>
+                                    <td class="text-end">
+                                        <span class="badge bg-primary">{{ item.count }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Alerts -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Alertes Stock Faible
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if lowStockConsommables|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Désignation</th>
+                                    <th>Modèle</th>
+                                    <th class="text-end">Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for consommable in lowStockConsommables %}
+                                <tr>
+                                    <td>{{ consommable.designation }}</td>
+                                    <td>{{ consommable.modele }}</td>
+                                    <td class="text-end">
+                                        <span class="badge bg-danger">{{ consommable.quantite }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <p>Aucun consommable en stock faible</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Interventions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Interventions Récentes</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Équipement</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for intervention in recentInterventions %}
+                                <tr>
+                                    <td>{{ intervention.dateIntervention|date('d/m/Y') }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if intervention.typeIntervention == 'curative' %}bg-danger
+                                            {% elseif intervention.typeIntervention == 'preventive' %}bg-success
+                                            {% elseif intervention.typeIntervention == 'contractuelle' %}bg-info
+                                            {% else %}bg-secondary
+                                            {% endif %}">
+                                            {{ intervention.typeIntervention|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ intervention.equipement ? intervention.equipement.modele : 'N/A' }}</td>
+                                    <td>{{ intervention.description|length > 50 ? intervention.description|slice(0, 50) ~ '...' : intervention.description }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users by Direction -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Utilisateurs par Direction</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for userDir in usersByDirection %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">{{ userDir.direction ?? 'Non assigné' }}</h5>
+                                    <h3 class="text-primary">{{ userDir.count }}</h3>
+                                    <small class="text-muted">utilisateurs</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Equipment State Pie Chart
+    const equipmentStateData = {{ equipmentsByState|json_encode|raw }};
+    const equipmentStateLabels = equipmentStateData.map(item => item.etat);
+    const equipmentStateValues = equipmentStateData.map(item => item.count);
+
+    new Chart(document.getElementById('equipmentStateChart'), {
+        type: 'doughnut',
+        data: {
+            labels: equipmentStateLabels,
+            datasets: [{
+                data: equipmentStateValues,
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#f4b619', '#e02d1b'],
+                hoverBorderColor: "rgba(234, 236, 244, 1)",
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Intervention Types Pie Chart
+    const interventionTypeData = {{ interventionsByType|json_encode|raw }};
+    const interventionTypeLabels = interventionTypeData.map(item => item.type);
+    const interventionTypeValues = interventionTypeData.map(item => item.count);
+
+    new Chart(document.getElementById('interventionTypeChart'), {
+        type: 'doughnut',
+        data: {
+            labels: interventionTypeLabels,
+            datasets: [{
+                data: interventionTypeValues,
+                backgroundColor: ['#e74a3b', '#1cc88a', '#36b9cc', '#f6c23e'],
+                hoverBackgroundColor: ['#e02d1b', '#17a673', '#2c9faf', '#f4b619'],
+                hoverBorderColor: "rgba(234, 236, 244, 1)",
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Monthly Interventions Line Chart
+    const monthlyLabels = monthlyData.map(item => {
+        const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun',
+                       'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+        return months[item.month - 1] + ' ' + item.year;
+    });
+    const monthlyValues = monthlyData.map(item => item.count);
+
+    new Chart(document.getElementById('monthlyInterventionsChart'), {
+        type: 'line',
+        data: {
+            labels: monthlyLabels,
+            datasets: [{
+                label: 'Interventions',
+                lineTension: 0.3,
+                backgroundColor: "rgba(78, 115, 223, 0.05)",
+                borderColor: "rgba(78, 115, 223, 1)",
+                pointRadius: 3,
+                pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointBorderColor: "rgba(78, 115, 223, 1)",
+                pointHoverRadius: 3,
+                pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                pointHitRadius: 10,
+                pointBorderWidth: 2,
+                data: monthlyValues,
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 7
+                    }
+                },
+                y: {
+                    ticks: {
+                        maxTicksLimit: 5,
+                        padding: 10,
+                    },
+                    grid: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+});
+</script>
+
+{% endblock %}

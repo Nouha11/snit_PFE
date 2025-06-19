@@ -24,34 +24,35 @@
     <!-- Search and filter section -->
     <div class="card shadow border-0 mb-4">
         <div class="card-body">
-            <form class="row g-3">
+            <form id="filterForm" class="row g-3">
                 <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-text bg-light">
                             <i class="fas fa-search text-primary"></i>
                         </span>
-                        <input type="text" class="form-control" placeholder="Rechercher un contrat...">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un contrat...">
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select">
-                        <option selected>Filtrer par date</option>
-                        <option>Dernier mois</option>
-                        <option>Derniers 3 mois</option>
-                        <option>Cette année</option>
+                    <select id="dateFilter" class="form-select">
+                        <option value="">Filtrer par date</option>
+                        <option value="1">Dernier mois</option>
+                        <option value="3">Derniers 3 mois</option>
+                        <option value="12">Cette année</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select">
-                        <option selected>Trier par</option>
-                        <option>Date (récent → ancien)</option>
-                        <option>Date (ancien → récent)</option>
-                        <option>Numéro de contrat</option>
+                    <select id="sortFilter" class="form-select">
+                        <option value="">Trier par</option>
+                        <option value="date-desc">Date (récent → ancien)</option>
+                        <option value="date-asc">Date (ancien → récent)</option>
+                        <option value="contract-num">Numéro de contrat</option>
+                        <option value="id">ID</option>
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-outline-primary w-100">
-                        <i class="fas fa-filter me-1"></i> Appliquer
+                    <button type="button" id="resetFilters" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-undo me-1"></i> Reset
                     </button>
                 </div>
             </form>
@@ -66,6 +67,7 @@
                     <h5 class="mb-0 fw-bold text-primary">
                         <i class="fas fa-list me-2"></i>
                         Liste des Contrats
+                        <span id="resultCount" class="text-muted small ms-2"></span>
                     </h5>
                 </div>
                 <div class="col text-end">
@@ -95,25 +97,25 @@
                                 </div>
                             </th>
                             <th>
-                                <a href="#" class="text-decoration-none text-dark">
+                                <a href="#" class="text-decoration-none text-dark sort-header" data-sort="id">
                                     ID
                                     <i class="fas fa-sort ms-1 text-muted small"></i>
                                 </a>
                             </th>
                             <th>
-                                <a href="#" class="text-decoration-none text-dark">
+                                <a href="#" class="text-decoration-none text-dark sort-header" data-sort="numContrat">
                                     N° de Contrat
                                     <i class="fas fa-sort ms-1 text-muted small"></i>
                                 </a>
                             </th>
                             <th>
-                                <a href="#" class="text-decoration-none text-dark">
+                                <a href="#" class="text-decoration-none text-dark sort-header" data-sort="reference">
                                     Référence
                                     <i class="fas fa-sort ms-1 text-muted small"></i>
                                 </a>
                             </th>
                             <th>
-                                <a href="#" class="text-decoration-none text-dark">
+                                <a href="#" class="text-decoration-none text-dark sort-header" data-sort="dateEnregistrement">
                                     Date d'Enregistrement
                                     <i class="fas fa-sort-down ms-1 text-primary small"></i>
                                 </a>
@@ -123,12 +125,18 @@
                             <th class="text-end pe-3">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="contractsTableBody">
                     {% for contrat in contrats %}
-                        <tr>
+                        <tr class="contract-row" 
+                            data-id="{{ contrat.id }}"
+                            data-contract-num="{{ contrat.numContrat|lower }}"
+                            data-reference="{{ contrat.reference|lower }}"
+                            data-registration-num="{{ contrat.numEnregistrement|lower }}"
+                            data-date="{{ contrat.dateEnregistrement ? contrat.dateEnregistrement|date('Y-m-d') : '' }}"
+                            data-equip-count="{{ contrat.equipements|length }}">
                             <td class="ps-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="check{{ contrat.id }}">
+                                    <input class="form-check-input" type="checkbox" value="{{ contrat.id }}" id="check{{ contrat.id }}">
                                     <label class="form-check-label" for="check{{ contrat.id }}"></label>
                                 </div>
                             </td>
@@ -198,7 +206,7 @@
                             </td>
                         </tr>
                     {% else %}
-                        <tr>
+                        <tr id="noResultsRow">
                             <td colspan="8" class="text-center py-5">
                                 <div class="py-5">
                                     <i class="fas fa-folder-open text-muted" style="font-size: 3rem;"></i>
@@ -218,7 +226,7 @@
         <div class="card-footer bg-white">
             <div class="row align-items-center">
                 <div class="col">
-                    <small class="text-muted">Affichage de <strong>1-10</strong> sur <strong>24</strong> contrats</small>
+                    <small class="text-muted" id="paginationInfo">Affichage de <strong>1-10</strong> sur <strong>24</strong> contrats</small>
                 </div>
                 <div class="col">
                     <nav aria-label="Page navigation">
@@ -263,53 +271,276 @@
 </div>
 
 <script>
-    // This would typically be in an external JS file
-    document.addEventListener('DOMContentLoaded', function() {
-        const selectAllCheckbox = document.getElementById('selectAll');
-        const checkboxes = document.querySelectorAll('tbody .form-check-input');
-        const bulkActionBar = document.getElementById('bulkActionBar');
-        const selectedCountElement = document.getElementById('selectedCount');
-        const cancelSelectionButton = document.getElementById('cancelSelection');
+document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('tbody .form-check-input');
+    const bulkActionBar = document.getElementById('bulkActionBar');
+    const selectedCountElement = document.getElementById('selectedCount');
+    const cancelSelectionButton = document.getElementById('cancelSelection');
+    
+    // Filter elements
+    const searchInput = document.getElementById('searchInput');
+    const dateFilter = document.getElementById('dateFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const resetFiltersBtn = document.getElementById('resetFilters');
+    const contractRows = document.querySelectorAll('.contract-row');
+    const resultCount = document.getElementById('resultCount');
+    const paginationInfo = document.getElementById('paginationInfo');
+    
+    let currentSort = { field: '', direction: 'asc' };
 
-        // Handle "Select All" checkbox
-        if (selectAllCheckbox) {
-            selectAllCheckbox.addEventListener('change', function() {
-                const isChecked = this.checked;
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = isChecked;
-                });
-                updateBulkActionBar();
+    // Bulk selection functionality
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const visibleCheckboxes = Array.from(checkboxes).filter(checkbox => {
+                const row = checkbox.closest('.contract-row');
+                return row && row.style.display !== 'none';
             });
-        }
+            
+            visibleCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateBulkActionBar();
+        });
+    }
 
-        // Handle individual checkboxes
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateBulkActionBar);
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateSelectAllState();
+            updateBulkActionBar();
+        });
+    });
+
+    if (cancelSelectionButton) {
+        cancelSelectionButton.addEventListener('click', function() {
+            selectAllCheckbox.checked = false;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateBulkActionBar();
+        });
+    }
+
+    function updateBulkActionBar() {
+        const selectedCheckboxes = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+        const selectedCount = selectedCheckboxes.length;
+        
+        if (selectedCount > 0) {
+            bulkActionBar.style.display = 'block';
+            selectedCountElement.textContent = selectedCount;
+        } else {
+            bulkActionBar.style.display = 'none';
+        }
+    }
+
+    function updateSelectAllState() {
+        const visibleCheckboxes = Array.from(checkboxes).filter(checkbox => {
+            const row = checkbox.closest('.contract-row');
+            return row && row.style.display !== 'none';
+        });
+        
+        const checkedVisibleCheckboxes = visibleCheckboxes.filter(checkbox => checkbox.checked);
+        
+        if (visibleCheckboxes.length === 0) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = false;
+        } else if (checkedVisibleCheckboxes.length === visibleCheckboxes.length) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = true;
+        } else if (checkedVisibleCheckboxes.length > 0) {
+            selectAllCheckbox.indeterminate = true;
+            selectAllCheckbox.checked = false;
+        } else {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = false;
+        }
+    }
+
+    // Search and filter functionality
+    function filterContracts() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const dateFilterValue = dateFilter.value;
+        let visibleCount = 0;
+
+        contractRows.forEach(row => {
+            let showRow = true;
+
+            // Search filter
+            if (searchTerm) {
+                const contractNum = row.dataset.contractNum || '';
+                const reference = row.dataset.reference || '';
+                const registrationNum = row.dataset.registrationNum || '';
+                const id = row.dataset.id || '';
+
+                const searchableText = `${contractNum} ${reference} ${registrationNum} ${id}`;
+                showRow = searchableText.includes(searchTerm);
+            }
+
+            // Date filter
+            if (showRow && dateFilterValue) {
+                const rowDate = row.dataset.date;
+                if (rowDate) {
+                    const contractDate = new Date(rowDate);
+                    const today = new Date();
+                    const monthsAgo = new Date();
+                    monthsAgo.setMonth(today.getMonth() - parseInt(dateFilterValue));
+
+                    showRow = contractDate >= monthsAgo;
+                } else {
+                    showRow = false;
+                }
+            }
+
+            // Show/hide row
+            row.style.display = showRow ? '' : 'none';
+            if (showRow) visibleCount++;
+
+            // Uncheck hidden rows
+            if (!showRow) {
+                const checkbox = row.querySelector('.form-check-input');
+                if (checkbox) checkbox.checked = false;
+            }
         });
 
-        // Cancel selection button
-        if (cancelSelectionButton) {
-            cancelSelectionButton.addEventListener('click', function() {
-                selectAllCheckbox.checked = false;
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-                updateBulkActionBar();
-            });
-        }
+        // Update result count
+        resultCount.textContent = `(${visibleCount} résultats)`;
+        
+        // Update pagination info
+        paginationInfo.innerHTML = `Affichage de <strong>1-${visibleCount}</strong> sur <strong>${visibleCount}</strong> contrats`;
 
-        // Update bulk action bar visibility and selected count
-        function updateBulkActionBar() {
-            const selectedCheckboxes = Array.from(checkboxes).filter(checkbox => checkbox.checked);
-            const selectedCount = selectedCheckboxes.length;
-            
-            if (selectedCount > 0) {
-                bulkActionBar.style.display = 'block';
-                selectedCountElement.textContent = selectedCount;
-            } else {
-                bulkActionBar.style.display = 'none';
+        // Update select all state
+        updateSelectAllState();
+        updateBulkActionBar();
+
+        // Show no results message if needed
+        const noResultsRow = document.getElementById('noResultsRow');
+        if (noResultsRow) {
+            noResultsRow.style.display = visibleCount === 0 ? '' : 'none';
+        }
+    }
+
+    function sortContracts(field, direction = 'asc') {
+        const tbody = document.getElementById('contractsTableBody');
+        const rowsArray = Array.from(contractRows);
+
+        rowsArray.sort((a, b) => {
+            let aValue, bValue;
+
+            switch (field) {
+                case 'id':
+                    aValue = parseInt(a.dataset.id) || 0;
+                    bValue = parseInt(b.dataset.id) || 0;
+                    break;
+                case 'numContrat':
+                    aValue = a.dataset.contractNum || '';
+                    bValue = b.dataset.contractNum || '';
+                    break;
+                case 'reference':
+                    aValue = a.dataset.reference || '';
+                    bValue = b.dataset.reference || '';
+                    break;
+                case 'dateEnregistrement':
+                    aValue = new Date(a.dataset.date || '1970-01-01');
+                    bValue = new Date(b.dataset.date || '1970-01-01');
+                    break;
+                case 'equipCount':
+                    aValue = parseInt(a.dataset.equipCount) || 0;
+                    bValue = parseInt(b.dataset.equipCount) || 0;
+                    break;
+                default:
+                    return 0;
             }
+
+            if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+            if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        // Re-append sorted rows
+        rowsArray.forEach(row => tbody.appendChild(row));
+
+        // Update sort indicators
+        document.querySelectorAll('.sort-header i').forEach(icon => {
+            icon.className = 'fas fa-sort ms-1 text-muted small';
+        });
+
+        const activeHeader = document.querySelector(`[data-sort="${field}"] i`);
+        if (activeHeader) {
+            activeHeader.className = `fas fa-sort-${direction === 'asc' ? 'up' : 'down'} ms-1 text-primary small`;
+        }
+    }
+
+    // Event listeners for search and filters
+    searchInput.addEventListener('input', filterContracts);
+    dateFilter.addEventListener('change', filterContracts);
+
+    sortFilter.addEventListener('change', function() {
+        const value = this.value;
+        if (!value) return;
+
+        switch (value) {
+            case 'date-desc':
+                sortContracts('dateEnregistrement', 'desc');
+                break;
+            case 'date-asc':
+                sortContracts('dateEnregistrement', 'asc');
+                break;
+            case 'contract-num':
+                sortContracts('numContrat', 'asc');
+                break;
+            case 'id':
+                sortContracts('id', 'asc');
+                break;
         }
     });
+
+    // Sort header click events
+    document.querySelectorAll('.sort-header').forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const field = this.dataset.sort;
+            const direction = currentSort.field === field && currentSort.direction === 'asc' ? 'desc' : 'asc';
+            
+            currentSort = { field, direction };
+            sortContracts(field, direction);
+            
+            // Reset sort filter dropdown
+            sortFilter.value = '';
+        });
+    });
+
+    // Reset filters
+    resetFiltersBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        dateFilter.value = '';
+        sortFilter.value = '';
+        
+        contractRows.forEach(row => {
+            row.style.display = '';
+        });
+
+        const totalCount = contractRows.length;
+        resultCount.textContent = '';
+        paginationInfo.innerHTML = `Affichage de <strong>1-${totalCount}</strong> sur <strong>${totalCount}</strong> contrats`;
+
+        // Reset sort indicators
+        document.querySelectorAll('.sort-header i').forEach(icon => {
+            icon.className = 'fas fa-sort ms-1 text-muted small';
+        });
+
+        updateSelectAllState();
+        updateBulkActionBar();
+    });
+
+    // Initialize
+    const totalCount = contractRows.length;
+    if (totalCount > 0) {
+        paginationInfo.innerHTML = `Affichage de <strong>1-${totalCount}</strong> sur <strong>${totalCount}</strong> contrats`;
+    }
+});
+
+
 </script>
 {% endblock %}
+

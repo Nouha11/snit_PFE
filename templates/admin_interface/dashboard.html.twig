@@ -1,9 +1,6 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Accueil Admin{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -32,11 +29,23 @@
             margin: 0.5rem;
             min-width: 120px;
         }
+        .text-teal {
+        color: #20c997; /* Bootstrap’s “teal” color */
+        }
+
+        .btn-teal {
+            background-color: #20c997;
+            color: white;
+        }
+
+        .btn-teal:hover {
+            background-color: #17a589;
+            color: white;
+        }
     </style>
-{% endblock %}
+</head>
 
-{% block body %}
-
+<body>
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
@@ -122,6 +131,18 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-bar-chart-line text-teal icon-large"></i>
+                        <h4 class="card-title">Statistiques</h4>
+                        <p class="card-text">Visualisez et analysez les performances et l’état du parc informatique.</p>
+                        <a href="{{ path('admin_statistics') }}" class="btn btn-teal">Accéder</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
@@ -140,7 +161,7 @@
                     <div class="card-body">
                         <i class="bi bi-people text-primary" style="font-size: 2rem;"></i>
                         <h5 class="card-title mt-2">Utilisateurs</h5>
-                        <p class="card-text h4 text-primary">--</p>
+                        <p class="card-text h4 text-primary">4</p>
                     </div>
                 </div>
             </div>
@@ -149,7 +170,7 @@
                     <div class="card-body">
                         <i class="bi bi-box text-success" style="font-size: 2rem;"></i>
                         <h5 class="card-title mt-2">Consommables</h5>
-                        <p class="card-text h4 text-success">--</p>
+                        <p class="card-text h4 text-success">8</p>
                     </div>
                 </div>
             </div>
@@ -158,7 +179,7 @@
                     <div class="card-body">
                         <i class="bi bi-file-text text-info" style="font-size: 2rem;"></i>
                         <h5 class="card-title mt-2">Contrats</h5>
-                        <p class="card-text h4 text-info">--</p>
+                        <p class="card-text h4 text-info">4</p>
                     </div>
                 </div>
             </div>
@@ -167,7 +188,7 @@
                     <div class="card-body">
                         <i class="bi bi-gear text-warning" style="font-size: 2rem;"></i>
                         <h5 class="card-title mt-2">Équipements</h5>
-                        <p class="card-text h4 text-warning">--</p>
+                        <p class="card-text h4 text-warning">7</p>
                     </div>
                 </div>
             </div>
@@ -176,22 +197,19 @@
 </section>
 
 <!-- Footer -->
-<footer class="bg-dark text-white py-4">
+<footer class="bg-dark text-white py-4 mt-auto">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h5>Admin Panel</h5>
-                <p class="text-muted">Interface d'administration pour la gestion de votre système.</p>
+        <div class="row text-center">
+            <div class="col-12 mb-2">
+                <h5 class="text-white mb-1">Panneau d'administration</h5>
             </div>
-            <div class="col-md-6 text-md-end">
-                <p class="text-muted mb-0">© {{ 'now'|date('Y') }} Tous droits réservés</p>
+            <div class="col-12">
+                <p class="mb-0">&copy; {{ 'now'|date('Y') }} Tous droits réservés</p>
             </div>
         </div>
     </div>
 </footer>
-{% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-{% endblock %}
